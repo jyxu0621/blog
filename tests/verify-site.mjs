@@ -9,6 +9,7 @@ assert.ok(existsSync(new URL("package.json", root)), "package.json is missing");
 
 const config = read("_config.yml");
 const packageJson = JSON.parse(read("package.json"));
+const scaffold = read("scaffolds/post.md");
 
 assert.equal(packageJson.hexo?.version, "8.1.2", "Hexo project metadata is missing");
 
@@ -19,9 +20,22 @@ for (const expected of [
   "url: https://jyxu0621.github.io/blog/",
   "root: /blog/",
   "theme: stellar",
+  "post_asset_folder: true",
 ]) {
   assert.ok(config.includes(expected), `Missing Hexo setting: ${expected}`);
 }
+
+for (const field of ["description:", "cover:"]) {
+  assert.ok(scaffold.includes(field), `Post scaffold is missing ${field}`);
+}
+
+assert.ok(existsSync(new URL("lib/local-cover.cjs", root)), "Local cover resolver is missing");
+assert.ok(existsSync(new URL("scripts/local-cover.js", root)), "Hexo local cover adapter is missing");
+assert.ok(existsSync(new URL("tools/publish-blog.ps1", root)), "HexoHub publish script is missing");
+assert.ok(
+  !existsSync(new URL("scripts/publish-blog.ps1", root)),
+  "PowerShell files in scripts/ are incorrectly loaded by Hexo as JavaScript",
+);
 
 assert.ok(
   packageJson.dependencies?.["hexo-theme-stellar"],
