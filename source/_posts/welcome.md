@@ -7,6 +7,7 @@ tags:
   - 博客
   - 技术
 description: 这是 Jason Xu 的第一篇博客文章。
+cover: https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80
 ---
 
 欢迎来到 **Jason Xu's Blog**。
@@ -14,4 +15,3 @@ description: 这是 Jason Xu 的第一篇博客文章。
 这里将用来记录我的技术学习、项目实践，以及在解决实际问题过程中的思考和总结。
 
 博客刚刚开始搭建，后续内容会逐步补充。希望这些记录既能帮助我整理知识，也能为遇到相似问题的人提供参考。
-

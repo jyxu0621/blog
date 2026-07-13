@@ -27,6 +27,17 @@ menubar:
       title: 个人主页
       url: https://jyxu0621.github.io/
 
+site_tree:
+  home:
+    leftbar: recent
+    rightbar:
+      - layout: markdown
+        title: 欢迎来到这里
+        content: |
+          这里是 Jason Xu 的技术学习博客，主要记录数字与混合信号集成电路、课程笔记和项目实践。
+
+          [GitHub](https://github.com/jyxu0621) · [分类](/blog/categories/) · [标签](/blog/tags/)
+
 footer:
   content: |
     本站由 [Jason Xu](/blog/) 使用 [Stellar](https://github.com/xaoxuu/hexo-theme-stellar) 主题创建。
