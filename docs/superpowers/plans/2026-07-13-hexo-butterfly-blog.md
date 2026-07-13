@@ -22,7 +22,7 @@
 
 **Files:**
 - Create: Hexo scaffold under repository root
-- Create: `scripts/verify-site.mjs`
+- Create: `tests/verify-site.mjs`
 - Modify: `package.json`
 
 **Interfaces:**
@@ -30,7 +30,7 @@
 
 - [ ] **Step 1: Write the failing verification script**
 
-Create `scripts/verify-site.mjs` to assert `_config.yml` contains the exact title, author, language `zh-CN`, URL, and root; assert `package.json` includes `hexo-theme-butterfly`; and require `public/index.html` only when invoked with `--generated`.
+Create `tests/verify-site.mjs` to assert `_config.yml` contains the exact title, author, language `zh-CN`, URL, and root; assert `package.json` includes `hexo-theme-butterfly`; and require `public/index.html` only when invoked with `--generated`.
 
 - [ ] **Step 2: Verify RED**
 
@@ -93,7 +93,7 @@ Commit message: `configure Chinese Butterfly blog`.
 
 - [ ] **Step 1: Add workflow assertions**
 
-Extend `scripts/verify-site.mjs` to require the workflow and its `npm ci`, source verification, Hexo build, generated verification, Pages artifact upload, and deployment steps.
+Extend `tests/verify-site.mjs` to require the workflow and its `npm ci`, source verification, Hexo build, generated verification, Pages artifact upload, and deployment steps.
 
 - [ ] **Step 2: Verify RED**
 
