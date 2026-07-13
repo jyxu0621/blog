@@ -100,6 +100,10 @@ if (process.argv.includes("--generated")) {
   assert.ok(generated.includes('href="/blog/'), "Generated internal links are not rooted at /blog/");
   assert.ok(!generated.includes('href="/"'), "Generated site contains a root-only internal link");
   assert.ok(generated.includes("/blog/css/main.css"), "Generated Stellar stylesheet is missing");
+  assert.ok(
+    !generated.includes(">solar:"),
+    "Generated navigation contains unresolved Stellar icon keys",
+  );
   for (const title of [
     "欢迎来到 Jason Xu's Blog",
     "数字与混合信号集成电路学习笔记",

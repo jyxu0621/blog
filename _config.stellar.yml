@@ -7,11 +7,11 @@ menubar:
   columns: 5
   items:
     - id: home
-      icon: solar:home-smile-bold-duotone
+      icon: solar:documents-bold-duotone
       title: 首页
       url: /
     - id: archives
-      icon: solar:archive-bold-duotone
+      icon: solar:notebook-bookmark-bold-duotone
       title: 归档
       url: /archives/
     - id: tags
@@ -19,11 +19,11 @@ menubar:
       title: 标签
       url: /tags/
     - id: categories
-      icon: solar:folder-with-files-bold-duotone
+      icon: solar:planet-bold-duotone
       title: 分类
       url: /categories/
     - id: profile
-      icon: solar:user-bold-duotone
+      icon: solar:chat-square-like-bold-duotone
       title: 个人主页
       url: https://jyxu0621.github.io/
 
