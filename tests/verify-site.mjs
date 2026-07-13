@@ -81,6 +81,7 @@ if (process.argv.includes("--generated")) {
     "Generated title is missing",
   );
   assert.ok(generated.includes('href="/blog/'), "Generated internal links are not rooted at /blog/");
+  assert.ok(!generated.includes('href="/"'), "Generated site contains a root-only internal link");
   assert.ok(generated.includes("/blog/css/main.css"), "Generated Stellar stylesheet is missing");
 }
 

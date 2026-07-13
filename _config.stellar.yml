@@ -1,6 +1,6 @@
 logo:
-  avatar: '[https://github.com/jyxu0621.png](/)'
-  title: "[Jason Xu's Blog](/)"
+  avatar: '[https://github.com/jyxu0621.png](/blog/)'
+  title: "[Jason Xu's Blog](/blog/)"
   subtitle: 记录技术学习与项目实践
 
 menubar:
@@ -26,3 +26,7 @@ menubar:
       icon: solar:user-bold-duotone
       title: 个人主页
       url: https://jyxu0621.github.io/
+
+footer:
+  content: |
+    本站由 [Jason Xu](/blog/) 使用 [Stellar](https://github.com/xaoxuu/hexo-theme-stellar) 主题创建。
