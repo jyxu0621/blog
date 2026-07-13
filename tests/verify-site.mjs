@@ -47,10 +47,10 @@ for (const expected of [
   "title: 项目",
   "title: 探索",
   "title: 社交",
-  "color: '#1BCDFC'",
-  "color: '#3DC550'",
-  "color: '#FA6400'",
-  "color: '#F44336'",
+  "theme: '#1BCDFC'",
+  "theme: '#3DC550'",
+  "theme: '#FA6400'",
+  "theme: '#F44336'",
   "url: /categories/项目实践/",
 ]) {
   assert.ok(stellar.includes(expected), `Missing xaoxuu-style menubar setting: ${expected}`);
@@ -74,9 +74,7 @@ for (const expected of [
   "Jason Xu's Blog",
   "https://github.com/jyxu0621.png",
   "url: /archives/",
-  "url: /tags/",
-  "url: /categories/",
-  "url: https://jyxu0621.github.io/",
+  "url: https://github.com/jyxu0621",
 ]) {
   assert.ok(stellar.includes(expected), `Missing Stellar setting: ${expected}`);
 }

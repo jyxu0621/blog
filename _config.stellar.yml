@@ -4,28 +4,28 @@ logo:
   subtitle: 记录技术学习与项目实践
 
 menubar:
-  columns: 5
+  columns: 4
   items:
     - id: home
-      icon: solar:documents-bold-duotone
-      title: 首页
+      icon: jason:blog
+      title: 博客
       url: /
-    - id: archives
-      icon: solar:notebook-bookmark-bold-duotone
-      title: 归档
+      theme: '#1BCDFC'
+    - id: projects
+      icon: jason:projects
+      title: 项目
+      url: /categories/项目实践/
+      theme: '#3DC550'
+    - id: explore
+      icon: jason:explore
+      title: 探索
       url: /archives/
-    - id: tags
-      icon: solar:hashtag-square-bold
-      title: 标签
-      url: /tags/
-    - id: categories
-      icon: solar:planet-bold-duotone
-      title: 分类
-      url: /categories/
-    - id: profile
-      icon: solar:chat-square-like-bold-duotone
-      title: 个人主页
-      url: https://jyxu0621.github.io/
+      theme: '#FA6400'
+    - id: social
+      icon: jason:social
+      title: 社交
+      url: https://github.com/jyxu0621
+      theme: '#F44336'
 
 site_tree:
   home:

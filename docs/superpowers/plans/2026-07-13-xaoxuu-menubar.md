@@ -71,22 +71,22 @@ Set `columns: 4` and configure:
   icon: jason:blog
   title: 博客
   url: /
-  color: '#1BCDFC'
+  theme: '#1BCDFC'
 - id: projects
   icon: jason:projects
   title: 项目
   url: /categories/项目实践/
-  color: '#3DC550'
+  theme: '#3DC550'
 - id: explore
   icon: jason:explore
   title: 探索
   url: /archives/
-  color: '#FA6400'
+  theme: '#FA6400'
 - id: social
   icon: jason:social
   title: 社交
   url: https://github.com/jyxu0621
-  color: '#F44336'
+  theme: '#F44336'
 ```
 
 - [ ] **Step 3: Build and pass verification**

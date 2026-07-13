@@ -7,7 +7,7 @@ Make the upper-left Stellar menubar on Jason Xu's Blog match the current visual 
 ## Confirmed Design
 
 - Use four equal-width menu cards instead of the current five-card navigation.
-- Match xaoxuu.com's current order, labels, Solar icons, and accent colors:
+- Match xaoxuu.com's current order, labels, Solar icons, and accent colors through Stellar's native `theme` field:
   - blue `博客`
   - green `项目`
   - orange `探索`
