@@ -46,6 +46,22 @@ assert.ok(
   "Welcome post title is missing",
 );
 
+assert.ok(
+  existsSync(new URL(".github/workflows/deploy-pages.yml", root)),
+  "GitHub Pages workflow is missing",
+);
+const workflow = read(".github/workflows/deploy-pages.yml");
+for (const expected of [
+  "npm ci --ignore-scripts",
+  "npm run verify:site",
+  "npm run build",
+  "npm run verify:site -- --generated",
+  "actions/upload-pages-artifact@v3",
+  "actions/deploy-pages@v4",
+]) {
+  assert.ok(workflow.includes(expected), `Missing workflow step: ${expected}`);
+}
+
 if (process.argv.includes("--generated")) {
   assert.ok(existsSync(new URL("public/index.html", root)), "public/index.html is missing");
   const generated = read("public/index.html");
