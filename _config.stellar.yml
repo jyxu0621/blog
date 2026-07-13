@@ -1,0 +1,28 @@
+logo:
+  avatar: '[https://github.com/jyxu0621.png](/)'
+  title: "[Jason Xu's Blog](/)"
+  subtitle: 记录技术学习与项目实践
+
+menubar:
+  columns: 5
+  items:
+    - id: home
+      icon: solar:home-smile-bold-duotone
+      title: 首页
+      url: /
+    - id: archives
+      icon: solar:archive-bold-duotone
+      title: 归档
+      url: /archives/
+    - id: tags
+      icon: solar:hashtag-square-bold
+      title: 标签
+      url: /tags/
+    - id: categories
+      icon: solar:folder-with-files-bold-duotone
+      title: 分类
+      url: /categories/
+    - id: profile
+      icon: solar:user-bold-duotone
+      title: 个人主页
+      url: https://jyxu0621.github.io/
