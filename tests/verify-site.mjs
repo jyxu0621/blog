@@ -41,6 +41,21 @@ assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post i
 const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
 
+for (const expected of [
+  "columns: 4",
+  "title: 博客",
+  "title: 项目",
+  "title: 探索",
+  "title: 社交",
+  "color: '#1BCDFC'",
+  "color: '#3DC550'",
+  "color: '#FA6400'",
+  "color: '#F44336'",
+  "url: /categories/项目实践/",
+]) {
+  assert.ok(stellar.includes(expected), `Missing xaoxuu-style menubar setting: ${expected}`);
+}
+
 const starterPosts = [
   "source/_posts/welcome.md",
   "source/_posts/integrated-circuit-notes.md",
@@ -104,6 +119,21 @@ if (process.argv.includes("--generated")) {
     !generated.includes(">solar:"),
     "Generated navigation contains unresolved Stellar icon keys",
   );
+  const menu = generated.match(/<nav class="menu dis-select">.*?<\/nav>/s)?.[0] ?? "";
+  assert.equal((menu.match(/class="nav-item/g) ?? []).length, 4, "Generated menubar must have four items");
+  assert.equal((menu.match(/<svg/g) ?? []).length, 4, "Generated menubar must have four SVG icons");
+  for (const expected of [
+    'title="博客"',
+    'title="项目"',
+    'title="探索"',
+    'title="社交"',
+    'style="color:#1BCDFC"',
+    'style="color:#3DC550"',
+    'style="color:#FA6400"',
+    'style="color:#F44336"',
+  ]) {
+    assert.ok(menu.includes(expected), `Generated menubar is missing: ${expected}`);
+  }
   for (const title of [
     "欢迎来到 Jason Xu's Blog",
     "数字与混合信号集成电路学习笔记",
