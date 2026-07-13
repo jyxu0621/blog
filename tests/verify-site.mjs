@@ -18,27 +18,38 @@ for (const expected of [
   "language: zh-CN",
   "url: https://jyxu0621.github.io/blog/",
   "root: /blog/",
+  "theme: stellar",
 ]) {
   assert.ok(config.includes(expected), `Missing Hexo setting: ${expected}`);
 }
 
 assert.ok(
-  packageJson.dependencies?.["hexo-theme-butterfly"],
-  "hexo-theme-butterfly dependency is missing",
+  packageJson.dependencies?.["hexo-theme-stellar"],
+  "hexo-theme-stellar dependency is missing",
 );
-
-assert.ok(existsSync(new URL("_config.butterfly.yml", root)), "Butterfly config is missing");
+assert.ok(
+  !packageJson.dependencies?.["hexo-theme-butterfly"],
+  "Butterfly dependency must be removed",
+);
+assert.ok(existsSync(new URL("_config.stellar.yml", root)), "Stellar config is missing");
+assert.ok(
+  !existsSync(new URL("_config.butterfly.yml", root)),
+  "Butterfly config must be removed",
+);
 assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post is missing");
 
-const butterfly = read("_config.butterfly.yml");
+const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
 
 for (const expected of [
-  "首页: / || fas fa-home",
-  "归档: /archives/ || fas fa-archive",
-  "个人主页: https://jyxu0621.github.io/ || fas fa-user",
+  "Jason Xu's Blog",
+  "https://github.com/jyxu0621.png",
+  "url: /archives/",
+  "url: /tags/",
+  "url: /categories/",
+  "url: https://jyxu0621.github.io/",
 ]) {
-  assert.ok(butterfly.includes(expected), `Missing Butterfly menu entry: ${expected}`);
+  assert.ok(stellar.includes(expected), `Missing Stellar setting: ${expected}`);
 }
 
 assert.ok(
@@ -69,10 +80,8 @@ if (process.argv.includes("--generated")) {
     generated.includes("Jason Xu&#39;s Blog") || generated.includes("Jason Xu's Blog"),
     "Generated title is missing",
   );
-  assert.ok(
-    generated.includes('href="/blog/'),
-    "Generated internal links are not rooted at /blog/",
-  );
+  assert.ok(generated.includes('href="/blog/'), "Generated internal links are not rooted at /blog/");
+  assert.ok(generated.includes("/blog/css/main.css"), "Generated Stellar stylesheet is missing");
 }
 
 console.log("Blog verification passed.");
