@@ -41,6 +41,20 @@ assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post i
 const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
 
+const starterPosts = [
+  "source/_posts/welcome.md",
+  "source/_posts/integrated-circuit-notes.md",
+  "source/_posts/course-notes-plan.md",
+  "source/_posts/project-practice-log.md",
+];
+for (const post of starterPosts) {
+  assert.ok(existsSync(new URL(post, root)), `Starter post is missing: ${post}`);
+  const body = read(post);
+  for (const field of ["cover:", "categories:", "tags:", "description:"]) {
+    assert.ok(body.includes(field), `${post} is missing ${field}`);
+  }
+}
+
 for (const expected of [
   "Jason Xu's Blog",
   "https://github.com/jyxu0621.png",
@@ -50,6 +64,9 @@ for (const expected of [
   "url: https://jyxu0621.github.io/",
 ]) {
   assert.ok(stellar.includes(expected), `Missing Stellar setting: ${expected}`);
+}
+for (const expected of ["rightbar:", "layout: markdown", "欢迎来到这里", "/categories/", "/tags/"]) {
+  assert.ok(stellar.includes(expected), `Missing rich homepage setting: ${expected}`);
 }
 
 assert.ok(
@@ -83,6 +100,16 @@ if (process.argv.includes("--generated")) {
   assert.ok(generated.includes('href="/blog/'), "Generated internal links are not rooted at /blog/");
   assert.ok(!generated.includes('href="/"'), "Generated site contains a root-only internal link");
   assert.ok(generated.includes("/blog/css/main.css"), "Generated Stellar stylesheet is missing");
+  for (const title of [
+    "欢迎来到 Jason Xu's Blog",
+    "数字与混合信号集成电路学习笔记",
+    "课程笔记整理计划",
+    "项目实践记录",
+    "欢迎来到这里",
+  ]) {
+    assert.ok(generated.includes(title), `Generated homepage is missing: ${title}`);
+  }
+  assert.ok((generated.match(/<article/g) ?? []).length >= 4, "Generated homepage has fewer than four cards");
 }
 
 console.log("Blog verification passed.");
