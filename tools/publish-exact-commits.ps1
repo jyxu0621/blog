@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $gh = "F:\blog\.local-tools\gh\bin\gh.exe"
 $git = "F:\blog\.local-tools\mingit\cmd\git.exe"
 $gitTree = Join-Path $PSScriptRoot "git-tree.ps1"
