@@ -62,6 +62,10 @@ assert.ok(existsSync(new URL("lib/local-cover.cjs", root)), "Local cover resolve
 assert.ok(existsSync(new URL("scripts/local-cover.js", root)), "Hexo local cover adapter is missing");
 assert.ok(existsSync(new URL("tools/publish-blog.ps1", root)), "HexoHub publish script is missing");
 assert.ok(
+  existsSync(new URL("tools/publish-exact-commits.ps1", root)),
+  "Tracked exact-commit publisher is missing",
+);
+assert.ok(
   !existsSync(new URL("scripts/publish-blog.ps1", root)),
   "PowerShell files in scripts/ are incorrectly loaded by Hexo as JavaScript",
 );
@@ -198,6 +202,7 @@ assert.ok(
 const workflow = read(".github/workflows/deploy-pages.yml");
 for (const expected of [
   "npm ci --ignore-scripts",
+  "npm run test:publisher",
   "npm run verify:site",
   "npm run verify:advanced",
   "npm run build",
@@ -217,6 +222,12 @@ for (const expected of [
 }
 
 const publisher = read("tools/publish-blog.ps1");
+assert.equal(
+  packageJson.scripts?.["test:publisher"],
+  "node --test tests/publish-exact-commits.test.mjs",
+);
+assert.ok(publisher.includes('$ExactPublisher = Join-Path $PSScriptRoot "publish-exact-commits.ps1"'));
+assert.ok(publisher.includes('Invoke-Npm @("run", "test:publisher")'));
 assert.ok(publisher.includes('Invoke-Npm @("run", "verify:advanced")'));
 
 if (process.argv.includes("--generated")) {

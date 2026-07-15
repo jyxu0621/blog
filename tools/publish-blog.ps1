@@ -11,7 +11,7 @@ $RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $PortableTools = "F:\blog\.local-tools"
 $Git = Join-Path $PortableTools "mingit\cmd\git.exe"
 $Gh = Join-Path $PortableTools "gh\bin\gh.exe"
-$ExactPublisher = Join-Path $PortableTools "publish-exact-commits.ps1"
+$ExactPublisher = Join-Path $PSScriptRoot "publish-exact-commits.ps1"
 
 function Assert-LastExitCode([string]$Operation) {
   if ($LASTEXITCODE -ne 0) {
@@ -36,6 +36,7 @@ try {
   & $Gh auth status --hostname github.com
   Assert-LastExitCode "GitHub CLI authentication check"
 
+  Invoke-Npm @("run", "test:publisher")
   Invoke-Npm @("run", "test:local-cover")
   Invoke-Npm @("run", "verify:site")
   Invoke-Npm @("run", "verify:advanced")
