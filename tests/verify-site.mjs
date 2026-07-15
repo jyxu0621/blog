@@ -55,12 +55,6 @@ assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post i
 const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
 
-const yamlScalar = (text, key) => {
-  const match = text.match(new RegExp(`^\\s*${key}:\\s*['"]?([^'"\\s#]+)`, "m"));
-  assert.ok(match, `Missing non-empty YAML setting: ${key}`);
-  return match[1];
-};
-
 for (const expected of [
   "service: giscus",
   "lazyload: true",
@@ -68,6 +62,7 @@ for (const expected of [
   "data-repo: jyxu0621/blog",
   "data-repo-id: R_kgDOTWpQAA",
   "data-category: Announcements",
+  "data-category-id: DIC_kwDOTWpQAM4DBPlT",
   "data-mapping: pathname",
   "data-strict: 1",
   "data-reactions-enabled: 1",
@@ -80,9 +75,6 @@ for (const expected of [
 ]) {
   assert.ok(stellar.includes(expected), `Missing Giscus setting: ${expected}`);
 }
-
-const giscusCategoryId = yamlScalar(stellar, "data-category-id");
-assert.ok(giscusCategoryId.startsWith("DIC_"), "Giscus category ID is invalid");
 
 for (const expected of [
   "columns: 4",
@@ -156,10 +148,16 @@ if (process.argv.includes("--generated")) {
     'data-repo="jyxu0621/blog"',
     'data-repo-id="R_kgDOTWpQAA"',
     'data-category="Announcements"',
-    `data-category-id="${giscusCategoryId}"`,
+    'data-category-id="DIC_kwDOTWpQAM4DBPlT"',
     'data-mapping="pathname"',
     'data-strict="1"',
+    'data-reactions-enabled="1"',
+    'data-emit-metadata="0"',
+    'data-input-position="top"',
+    'data-theme="preferred_color_scheme"',
     'data-lang="zh-CN"',
+    'data-loading="lazy"',
+    'crossorigin="anonymous"',
   ]) {
     assert.ok(generatedPost.includes(expected), `Generated Giscus widget is missing: ${expected}`);
   }
