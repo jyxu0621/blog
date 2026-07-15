@@ -55,6 +55,35 @@ assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post i
 const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
 
+const yamlScalar = (text, key) => {
+  const match = text.match(new RegExp(`^\\s*${key}:\\s*['"]?([^'"\\s#]+)`, "m"));
+  assert.ok(match, `Missing non-empty YAML setting: ${key}`);
+  return match[1];
+};
+
+for (const expected of [
+  "service: giscus",
+  "lazyload: true",
+  "src: https://giscus.app/client.js",
+  "data-repo: jyxu0621/blog",
+  "data-repo-id: R_kgDOTWpQAA",
+  "data-category: Announcements",
+  "data-mapping: pathname",
+  "data-strict: 1",
+  "data-reactions-enabled: 1",
+  "data-emit-metadata: 0",
+  "data-input-position: top",
+  "data-theme: preferred_color_scheme",
+  "data-lang: zh-CN",
+  "data-loading: lazy",
+  "crossorigin: anonymous",
+]) {
+  assert.ok(stellar.includes(expected), `Missing Giscus setting: ${expected}`);
+}
+
+const giscusCategoryId = yamlScalar(stellar, "data-category-id");
+assert.ok(giscusCategoryId.startsWith("DIC_"), "Giscus category ID is invalid");
+
 for (const expected of [
   "columns: 4",
   "title: 博客",
@@ -120,6 +149,21 @@ for (const expected of [
 if (process.argv.includes("--generated")) {
   assert.ok(existsSync(new URL("public/index.html", root)), "public/index.html is missing");
   const generated = read("public/index.html");
+  const generatedPost = read("public/2026/07/13/welcome/index.html");
+  assert.ok(generatedPost.includes('id="giscus"'), "Generated post is missing Giscus container");
+  for (const expected of [
+    'src="https://giscus.app/client.js"',
+    'data-repo="jyxu0621/blog"',
+    'data-repo-id="R_kgDOTWpQAA"',
+    'data-category="Announcements"',
+    `data-category-id="${giscusCategoryId}"`,
+    'data-mapping="pathname"',
+    'data-strict="1"',
+    'data-lang="zh-CN"',
+  ]) {
+    assert.ok(generatedPost.includes(expected), `Generated Giscus widget is missing: ${expected}`);
+  }
+  assert.ok(!generated.includes('id="giscus"'), "Homepage must not contain a Giscus widget");
   assert.ok(
     generated.includes("Jason Xu&#39;s Blog") || generated.includes("Jason Xu's Blog"),
     "Generated title is missing",
