@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) { throw "Unable to enumerate local commits" }
 if ($commits.Count -eq 0) { Write-Output "Remote is already current"; exit 0 }
 
 $uploadedBlobs = @{}
-$tempRoot = Join-Path $env:TEMP ("codex-git-blobs-" + [Guid]::NewGuid())
+$tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("codex-git-blobs-" + [Guid]::NewGuid())
 New-Item -ItemType Directory -Path $tempRoot | Out-Null
 
 try {

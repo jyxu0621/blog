@@ -153,7 +153,23 @@ if (!hasInput) {
       '$gitTree = Join-Path $PSScriptRoot "git-tree.ps1"',
       `$gitTree = ${powerShellString(join(root, "tools", "git-tree.ps1"))}`,
     );
+    publisherSource = replaceRequired(
+      publisherSource,
+      '$ErrorActionPreference = "Stop"',
+      '$ErrorActionPreference = "Stop"\nRemove-Item Env:TEMP -ErrorAction SilentlyContinue',
+    );
     writeFileSync(publisherCopy, publisherSource, "utf8");
+
+    const publisherEnv = {
+      ...process.env,
+      FAKE_CAPTURE_DIR: captureDir,
+      FAKE_REMOTE_SHA: remoteSha,
+      FAKE_TREE_SHA: treeSha,
+      FAKE_COMMIT_SHA: commitSha,
+    };
+    for (const key of Object.keys(publisherEnv)) {
+      if (key.toUpperCase() === "TEMP") delete publisherEnv[key];
+    }
 
     execFileSync(
       powershell,
@@ -168,13 +184,7 @@ if (!hasInput) {
       ],
       {
         cwd: repository,
-        env: {
-          ...process.env,
-          FAKE_CAPTURE_DIR: captureDir,
-          FAKE_REMOTE_SHA: remoteSha,
-          FAKE_TREE_SHA: treeSha,
-          FAKE_COMMIT_SHA: commitSha,
-        },
+        env: publisherEnv,
         encoding: "utf8",
         stdio: ["ignore", "pipe", "pipe"],
       },
