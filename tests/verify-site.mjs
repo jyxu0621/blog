@@ -202,10 +202,18 @@ for (const expected of [
   "npm run verify:advanced",
   "npm run build",
   "npm run verify:site -- --generated",
-  "actions/upload-pages-artifact@v3",
-  "actions/deploy-pages@v4",
 ]) {
   assert.ok(workflow.includes(expected), `Missing workflow step: ${expected}`);
+}
+for (const expected of [
+  "actions/checkout@v7",
+  "actions/setup-node@v7",
+  "actions/configure-pages@v6",
+  "actions/upload-pages-artifact@v5",
+  "actions/deploy-pages@v5",
+  "node-version: 24",
+]) {
+  assert.ok(workflow.includes(expected), `Missing current Pages workflow setting: ${expected}`);
 }
 
 const publisher = read("tools/publish-blog.ps1");
