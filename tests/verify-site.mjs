@@ -246,6 +246,19 @@ if (process.argv.includes("--generated")) {
   const generatedCss = read("public/css/main.css");
   const technicalPost = read("public/2026/07/13/integrated-circuit-notes/index.html");
 
+  for (const pagePath of [
+    "public/index.html",
+    "public/categories/index.html",
+    "public/tags/index.html",
+    "public/archives/index.html",
+  ]) {
+    const navbar = read(pagePath).match(/<nav class="post">([\s\S]*?)<\/nav>/)?.[1] ?? "";
+    for (const href of ["/blog/", "/blog/categories/", "/blog/tags/", "/blog/archives/"]) {
+      const count = (navbar.match(new RegExp(`href="${href}"`, "g")) ?? []).length;
+      assert.equal(count, 1, `${pagePath} repeats the blog navigation link: ${href}`);
+    }
+  }
+
   assert.ok(
     generated.includes("https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css"),
     "Generated font stylesheet is missing",

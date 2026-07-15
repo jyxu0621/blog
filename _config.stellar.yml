@@ -58,11 +58,6 @@ site_tree:
     menu_id: home
     leftbar: [recent, quick_links]
     rightbar: [tagcloud]
-    nav_tabs:
-      近期发布: /
-      分类: /categories/
-      标签: /tags/
-      归档: /archives/
   post:
     menu_id: home
     leftbar: [recent, quick_links]
