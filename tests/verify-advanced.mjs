@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
@@ -22,9 +22,9 @@ try {
   runHexo(["clean"]);
   runHexo(["generate", "--draft"]);
 
-  const draftPath = "public/2026/07/15/mathjax-verification/index.html";
-  assert.ok(existsSync(new URL(draftPath, rootUrl)), "MathJax draft was not generated");
-  const draft = read(draftPath);
+  const draftPaths = globSync("public/**/mathjax-verification/index.html", { cwd: root });
+  assert.equal(draftPaths.length, 1, "MathJax draft was not generated exactly once");
+  const draft = read(draftPaths[0].replaceAll("\\", "/"));
   assert.ok(draft.includes("<mjx-container"), "Formula was not rendered by server-side MathJax");
   assert.ok(!draft.includes("MathJax.js"), "Draft loads duplicate client-side MathJax");
   assert.ok(!draft.includes("katex.min.css"), "Draft loads duplicate KaTeX assets");

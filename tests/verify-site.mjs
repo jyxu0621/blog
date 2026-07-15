@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, globSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 const root = new URL("../", import.meta.url);
+const rootPath = fileURLToPath(root);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 
 assert.ok(existsSync(new URL("_config.yml", root)), "Hexo _config.yml is missing");
@@ -232,8 +234,9 @@ assert.ok(publisher.includes('Invoke-Npm @("run", "verify:advanced")'));
 if (process.argv.includes("--generated")) {
   assert.ok(existsSync(new URL("public/index.html", root)), "public/index.html is missing");
   assert.ok(existsSync(new URL("public/atom.xml", root)), "Atom feed is missing");
-  assert.ok(
-    !existsSync(new URL("public/2026/07/15/mathjax-verification/index.html", root)),
+  assert.equal(
+    globSync("public/**/mathjax-verification/index.html", { cwd: rootPath }).length,
+    0,
     "Draft leaked into production",
   );
   const productionFeed = read("public/atom.xml");
