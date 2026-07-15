@@ -74,20 +74,32 @@ function Read-GitTreeEntries {
     return $entries
   }
   finally {
-    if ($started) {
-      try {
-        if (-not $process.HasExited) {
-          $process.Kill()
-          $process.WaitForExit()
+    try {
+      if ($started) {
+        try {
+          if (-not $process.HasExited) {
+            $process.Kill()
+            $process.WaitForExit()
+          }
+        }
+        finally {
+          try {
+            $process.StandardOutput.Dispose()
+          }
+          finally {
+            $process.StandardError.Dispose()
+          }
         }
       }
+    }
+    finally {
+      try {
+        $stdout.Dispose()
+      }
       finally {
-        $process.StandardOutput.Dispose()
-        $process.StandardError.Dispose()
+        $process.Dispose()
       }
     }
-    $stdout.Dispose()
-    $process.Dispose()
   }
 }
 
