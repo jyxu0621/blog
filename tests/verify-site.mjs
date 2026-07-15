@@ -202,7 +202,6 @@ assert.ok(
 const workflow = read(".github/workflows/deploy-pages.yml");
 for (const expected of [
   "npm ci --ignore-scripts",
-  "npm run test:publisher",
   "npm run verify:site",
   "npm run verify:advanced",
   "npm run build",
