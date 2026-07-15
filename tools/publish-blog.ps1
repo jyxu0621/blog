@@ -38,6 +38,7 @@ try {
 
   Invoke-Npm @("run", "test:local-cover")
   Invoke-Npm @("run", "verify:site")
+  Invoke-Npm @("run", "verify:advanced")
   Invoke-Npm @("run", "clean")
   Invoke-Npm @("run", "build")
   Invoke-Npm @("run", "verify:site", "--", "--generated")

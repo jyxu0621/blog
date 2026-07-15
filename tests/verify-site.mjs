@@ -15,6 +15,33 @@ const widgets = read("source/_data/widgets.yml");
 
 assert.equal(packageJson.hexo?.version, "8.1.2", "Hexo project metadata is missing");
 
+for (const dependency of ["hexo-generator-feed", "hexo-filter-mathjax"]) {
+  assert.ok(packageJson.dependencies?.[dependency], `Missing dependency: ${dependency}`);
+}
+assert.equal(
+  packageJson.description,
+  "Jason Xu's personal technical blog powered by Hexo and Stellar",
+  "Package description still references the old theme",
+);
+
+for (const expected of [
+  "feed:",
+  "type: atom",
+  "path: atom.xml",
+  "mathjax:",
+  "every_page: false",
+  "append_css: true",
+]) {
+  assert.ok(config.includes(expected), `Missing advanced Hexo setting: ${expected}`);
+}
+
+assert.ok(scaffold.includes("mathjax: false"), "Post scaffold is missing MathJax opt-in");
+assert.ok(
+  existsSync(new URL("source/_drafts/mathjax-verification.md", root)),
+  "MathJax draft fixture is missing",
+);
+assert.equal(packageJson.scripts?.["verify:advanced"], "node tests/verify-advanced.mjs");
+
 for (const expected of [
   "title: Jason Xu's Blog",
   "author: Jason Xu",
@@ -172,6 +199,7 @@ const workflow = read(".github/workflows/deploy-pages.yml");
 for (const expected of [
   "npm ci --ignore-scripts",
   "npm run verify:site",
+  "npm run verify:advanced",
   "npm run build",
   "npm run verify:site -- --generated",
   "actions/upload-pages-artifact@v3",
@@ -180,8 +208,18 @@ for (const expected of [
   assert.ok(workflow.includes(expected), `Missing workflow step: ${expected}`);
 }
 
+const publisher = read("tools/publish-blog.ps1");
+assert.ok(publisher.includes('Invoke-Npm @("run", "verify:advanced")'));
+
 if (process.argv.includes("--generated")) {
   assert.ok(existsSync(new URL("public/index.html", root)), "public/index.html is missing");
+  assert.ok(existsSync(new URL("public/atom.xml", root)), "Atom feed is missing");
+  assert.ok(
+    !existsSync(new URL("public/2026/07/15/mathjax-verification/index.html", root)),
+    "Draft leaked into production",
+  );
+  const productionFeed = read("public/atom.xml");
+  assert.ok(!productionFeed.includes("MathJax Verification"), "Unpublished draft leaked into production feed");
   const generated = read("public/index.html");
   const generatedPost = read("public/2026/07/13/welcome/index.html");
   const generatedCss = read("public/css/main.css");

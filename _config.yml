@@ -59,3 +59,27 @@ exclude:
 ignore:
 
 theme: stellar
+theme_config:
+  plugins:
+    mathjax:
+      inject: '<!-- MathJax is rendered server-side. -->'
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content: true
+  content_limit: false
+  order_by: -date
+  autodiscovery: true
+
+mathjax:
+  tags: none
+  single_dollars: true
+  cjk_width: 0.9
+  normal_width: 0.6
+  append_css: true
+  every_page: false
+  packages: []
+  extension_options: {}

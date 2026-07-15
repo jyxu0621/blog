@@ -1,14 +1,15 @@
 {
   "name": "blog-site",
   "version": "1.0.0",
-  "description": "Jason Xu's personal blog powered by Hexo and Butterfly",
+  "description": "Jason Xu's personal technical blog powered by Hexo and Stellar",
   "private": true,
   "scripts": {
     "clean": "hexo clean",
     "build": "hexo generate",
     "dev": "hexo server",
     "test:local-cover": "node --test tests/local-cover.test.mjs",
-    "verify:site": "node tests/verify-site.mjs"
+    "verify:site": "node tests/verify-site.mjs",
+    "verify:advanced": "node tests/verify-advanced.mjs"
   },
   "keywords": [],
   "author": "Jason Xu",
@@ -16,8 +17,10 @@
   "type": "commonjs",
   "dependencies": {
     "hexo": "^8.1.2",
+    "hexo-filter-mathjax": "^0.11.0",
     "hexo-generator-archive": "^2.0.0",
     "hexo-generator-category": "^2.0.0",
+    "hexo-generator-feed": "^4.0.0",
     "hexo-generator-index": "^4.0.0",
     "hexo-generator-tag": "^2.0.0",
     "hexo-renderer-ejs": "^2.0.0",
