@@ -83,6 +83,18 @@ Extend `scaffolds/post.md` with `mathjax: false` while retaining title, date, ta
 
 No existing article is rewritten merely to demonstrate a plugin. A non-published draft fixture will provide a formula smoke test without adding a public article.
 
+## Deployment Maintenance
+
+Upgrade the GitHub Pages workflow to the latest current Node 24 action majors so deployments no longer emit the Node 20 deprecation warnings observed in run `29413513864`:
+
+- `actions/checkout@v7`
+- `actions/setup-node@v7`
+- `actions/configure-pages@v6`
+- `actions/upload-pages-artifact@v5`
+- `actions/deploy-pages@v5`
+
+Keep Node.js itself pinned to major `24`, retain least-privilege Pages permissions, and keep the existing build/deploy job separation.
+
 ## Files and Interfaces
 
 - `_config.stellar.yml`: typography, inject, widgets placement, navigation, search, metadata, article settings, footer, and plugin switches.
@@ -106,4 +118,3 @@ No existing article is rewritten merely to demonstrate a plugin. A non-published
 ## Rollback
 
 All changes are configuration, data, scaffolding, tests, and dependencies. Reverting the optimization commits restores the current live layout without touching Discussions, Giscus data, existing posts, or GitHub Pages settings.
-
