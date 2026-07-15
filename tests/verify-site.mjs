@@ -10,6 +10,8 @@ assert.ok(existsSync(new URL("package.json", root)), "package.json is missing");
 const config = read("_config.yml");
 const packageJson = JSON.parse(read("package.json"));
 const scaffold = read("scaffolds/post.md");
+assert.ok(existsSync(new URL("source/_data/widgets.yml", root)), "Stellar widgets are missing");
+const widgets = read("source/_data/widgets.yml");
 
 assert.equal(packageJson.hexo?.version, "8.1.2", "Hexo project metadata is missing");
 
@@ -54,6 +56,50 @@ assert.ok(existsSync(new URL("source/_posts/welcome.md", root)), "Welcome post i
 
 const stellar = read("_config.stellar.yml");
 const welcome = read("source/_posts/welcome.md");
+
+for (const expected of [
+  "https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css",
+  'body: \'"LXGW WenKai Screen", system-ui, "Microsoft Yahei", "Helvetica Neue", Helvetica, Arial, sans-serif\'',
+  'code: \'"LXGW WenKai Screen", Menlo, Monaco, Consolas, system-ui, "Courier New", monospace, sans-serif\'',
+  "originalHost: jyxu0621.github.io",
+  "service: local_search",
+  "codeblock: true",
+  "leftbar: [recent, quick_links]",
+  "rightbar: [toc, tagcloud]",
+  "share: [link]",
+  "selector: '.md-text img:not([class]), .md-text .image img, .timenode p>img'",
+  "default_text: 复制",
+  "success_text: 已复制",
+  "swiper:",
+  "tianli_gpt:",
+  "mermaid:",
+]) {
+  assert.ok(stellar.includes(expected), `Missing optimized Stellar setting: ${expected}`);
+}
+
+for (const expected of [
+  "recent:",
+  "rss: /blog/atom.xml",
+  "quick_links:",
+  "title: 快捷入口",
+  "url: https://jyxu0621.github.io/",
+  "url: https://github.com/jyxu0621",
+  "url: /blog/categories/",
+  "url: /blog/tags/",
+  "tagcloud:",
+  "title: 标签云",
+  "toc:",
+  "max_depth: 4",
+]) {
+  assert.ok(widgets.includes(expected), `Missing widget setting: ${expected}`);
+}
+
+for (const disabled of ["swiper", "scrollreveal", "tianli_gpt", "katex", "mathjax", "mermaid", "heti"]) {
+  assert.ok(
+    new RegExp(`^  ${disabled}:\\r?\\n    enable: false$`, "m").test(stellar),
+    `Unused client plugin must be disabled: ${disabled}`,
+  );
+}
 
 for (const expected of [
   "service: giscus",
@@ -113,10 +159,6 @@ for (const expected of [
 ]) {
   assert.ok(stellar.includes(expected), `Missing Stellar setting: ${expected}`);
 }
-for (const expected of ["rightbar:", "layout: markdown", "欢迎来到这里", "/categories/", "/tags/"]) {
-  assert.ok(stellar.includes(expected), `Missing rich homepage setting: ${expected}`);
-}
-
 assert.ok(
   welcome.includes("title: 欢迎来到 Jason Xu's Blog"),
   "Welcome post title is missing",
@@ -142,6 +184,22 @@ if (process.argv.includes("--generated")) {
   assert.ok(existsSync(new URL("public/index.html", root)), "public/index.html is missing");
   const generated = read("public/index.html");
   const generatedPost = read("public/2026/07/13/welcome/index.html");
+  const generatedCss = read("public/css/main.css");
+  const technicalPost = read("public/2026/07/13/integrated-circuit-notes/index.html");
+
+  assert.ok(
+    generated.includes("https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css"),
+    "Generated font stylesheet is missing",
+  );
+  assert.ok(generatedCss.includes("LXGW WenKai Screen"), "Generated CSS font stack is missing");
+  assert.ok(generated.includes('class="widget-wrapper linklist"'), "Homepage quick links are missing");
+  assert.ok(generated.includes('class="widget-wrapper tagcloud"'), "Homepage tag cloud is missing");
+  assert.ok(generated.includes('href="/blog/atom.xml"'), "Homepage feed link is missing");
+  assert.ok(technicalPost.includes('class="widget-wrapper toc"'), "Article TOC is missing");
+  assert.ok(technicalPost.includes("计划整理的内容"), "Article TOC content is missing");
+  for (const unwanted of ["swiper-bundle", "scrollreveal", "chuckle-post-ai", "mermaid.min.js", "MathJax.js"]) {
+    assert.ok(!generated.includes(unwanted), `Homepage loads disabled plugin: ${unwanted}`);
+  }
   assert.ok(generatedPost.includes('id="giscus"'), "Generated post is missing Giscus container");
   for (const expected of [
     'src="https://giscus.app/client.js"',
@@ -193,7 +251,6 @@ if (process.argv.includes("--generated")) {
     "数字与混合信号集成电路学习笔记",
     "课程笔记整理计划",
     "项目实践记录",
-    "欢迎来到这里",
   ]) {
     assert.ok(generated.includes(title), `Generated homepage is missing: ${title}`);
   }

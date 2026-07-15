@@ -1,7 +1,29 @@
+preconnect:
+  - https://npm.elemecdn.com
+
+inject:
+  head:
+    - "<link rel=\"stylesheet\" href=\"https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css\" media=\"print\" onload=\"this.media='all'\">"
+    - '<noscript><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css"></noscript>'
+
+canonical:
+  originalHost: jyxu0621.github.io
+  officialHosts:
+    - localhost
+
+open_graph:
+  enable: true
+
+structured_data:
+  links:
+    - https://github.com/jyxu0621
+    - https://jyxu0621.github.io/
+    - https://jyxu0621.github.io/blog/
+
 logo:
   avatar: '[https://github.com/jyxu0621.png](/blog/)'
   title: "[Jason Xu's Blog](/blog/)"
-  subtitle: 记录技术学习与项目实践
+  subtitle: 记录技术学习与项目实践 | 数字与混合信号集成电路
 
 menubar:
   columns: 4
@@ -29,18 +51,122 @@ menubar:
 
 site_tree:
   home:
-    leftbar: recent
-    rightbar:
-      - layout: markdown
-        title: 欢迎来到这里
-        content: |
-          这里是 Jason Xu 的技术学习博客，主要记录数字与混合信号集成电路、课程笔记和项目实践。
+    menu_id: home
+    leftbar: [recent, quick_links]
+    rightbar: [tagcloud]
+  index_blog:
+    menu_id: home
+    leftbar: [recent, quick_links]
+    rightbar: [tagcloud]
+    nav_tabs:
+      近期发布: /
+      分类: /categories/
+      标签: /tags/
+      归档: /archives/
+  post:
+    menu_id: home
+    leftbar: [recent, quick_links]
+    rightbar: [toc, tagcloud]
+  page:
+    menu_id: home
+    leftbar: [recent, quick_links]
+    rightbar: [toc]
+  error_page:
+    menu_id: home
+    '404': /404.html
+    leftbar: [recent]
 
-          [GitHub](https://github.com/jyxu0621) · [分类](/blog/categories/) · [标签](/blog/tags/)
+article:
+  type: tech
+  auto_excerpt: 128
+  license: '本文采用 [署名-非商业性使用-相同方式共享 4.0 国际](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议，转载请注明出处。'
+  share: [link]
+  related_posts:
+    enable: false
+    max_count: 5
+
+search:
+  service: local_search
+  local_search:
+    field: all
+    path: /search.json
+    content: true
+    skip_search: []
+    codeblock: true
 
 footer:
+  sitemap:
+    - title: 博客
+      items:
+        - '[近期发布](/blog/)'
+        - '[分类](/blog/categories/)'
+        - '[标签](/blog/tags/)'
+        - '[归档](/blog/archives/)'
+    - title: Jason Xu
+      items:
+        - '[个人主页](https://jyxu0621.github.io/)'
+        - '[GitHub](https://github.com/jyxu0621)'
+        - '[Atom 订阅](/blog/atom.xml)'
   content: |
     本站由 [Jason Xu](/blog/) 使用 [Stellar](https://github.com/xaoxuu/hexo-theme-stellar) 主题创建。
+    本博客所有文章除特别声明外，均采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议。
+
+tag_plugins:
+  image:
+    fancybox: true
+  copy:
+    toast: 复制成功
+
+plugins:
+  preload:
+    enable: true
+    service: flying_pages
+    flying_pages: https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js
+  fancybox:
+    enable: true
+    loader: /js/plugins/fancybox-loader.js
+    js: https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js
+    css: https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css
+    selector: '.md-text img:not([class]), .md-text .image img, .timenode p>img'
+  swiper:
+    enable: false
+  scrollreveal:
+    enable: false
+  tianli_gpt:
+    enable: false
+  katex:
+    enable: false
+  mathjax:
+    enable: false
+  mermaid:
+    enable: false
+    style_optimization: false
+  copycode:
+    enable: true
+    default_text: 复制
+    success_text: 已复制
+    toast: 复制成功
+  heti:
+    enable: false
+
+style:
+  prefers_theme: auto
+  smooth_scroll: true
+  font-size:
+    root: 16px
+    body: 17px
+    code: 85%
+    codeblock: 0.8125rem
+  font-family:
+    body: '"LXGW WenKai Screen", system-ui, "Microsoft Yahei", "Helvetica Neue", Helvetica, Arial, sans-serif'
+    code: '"LXGW WenKai Screen", Menlo, Monaco, Consolas, system-ui, "Courier New", monospace, sans-serif'
+    codeblock: '"LXGW WenKai Screen", Menlo, Monaco, Consolas, system-ui, "Courier New", monospace, sans-serif'
+  leftbar:
+    background-color: var(--card)
+    background-image: url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.13/image/sidebar-bg1@small.jpg)
+    blur-px: 100px
+    blur-bg: var(--bg-a60)
+    background-opacity: 0.8
 
 comments:
   service: giscus

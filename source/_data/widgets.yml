@@ -1,0 +1,41 @@
+recent:
+  layout: recent
+  rss: /blog/atom.xml
+  limit: 5
+
+quick_links:
+  layout: linklist
+  title: 快捷入口
+  columns: 2
+  items:
+    - icon: jason:blog
+      title: 个人主页
+      url: https://jyxu0621.github.io/
+    - icon: jason:social
+      title: GitHub
+      url: https://github.com/jyxu0621
+    - icon: jason:projects
+      title: 分类
+      url: /blog/categories/
+    - icon: jason:explore
+      title: 标签
+      url: /blog/tags/
+
+tagcloud:
+  layout: tagcloud
+  title: 标签云
+  min_font: 13
+  max_font: 20
+  amount: 30
+  orderby: name
+  order: 1
+  color: false
+  show_count: false
+
+toc:
+  layout: toc
+  list_number: false
+  min_depth: 2
+  max_depth: 4
+  fallback: recent
+  collapse: auto
