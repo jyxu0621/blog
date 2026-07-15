@@ -11,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -28,6 +28,33 @@ const replaceRequired = (source, expected, replacement) => {
   assert.ok(source.includes(expected), `Test harness could not replace: ${expected}`);
   return source.replace(expected, replacement);
 };
+
+test("Git tree parser rejects an unsafe commit argument before starting Git", () => {
+  for (const unsafeCommit of ["not-a-sha", `${"a".repeat(40)}\n`]) {
+    const result = spawnSync(
+      powershell,
+      [
+        "-NoProfile",
+        "-NonInteractive",
+        ...(process.platform === "win32" ? ["-ExecutionPolicy", "Bypass"] : []),
+        "-File",
+        join(root, "tools", "git-tree.ps1"),
+        "-Git",
+        git,
+        "-Commit",
+        unsafeCommit,
+        "-Json",
+      ],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.match(
+      `${result.stdout}\n${result.stderr}`,
+      /Commit SHA must be exactly 40 or 64 hexadecimal characters/,
+    );
+  }
+});
 
 test("Git tree parser preserves an exact Chinese path", () => {
   const repository = mkdtempSync(join(tmpdir(), "publisher-unicode-"));

@@ -13,22 +13,37 @@ function Read-GitTreeEntries {
     [Parameter(Mandatory = $true)][string]$CommitSha
   )
 
-  $tempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("git-tree-" + [Guid]::NewGuid())
-  $stdoutPath = Join-Path $tempRoot "tree.bin"
-  $stderrPath = Join-Path $tempRoot "tree.err"
-  New-Item -ItemType Directory -Path $tempRoot | Out-Null
+  if ($CommitSha -notmatch '\A(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})\z') {
+    throw "Commit SHA must be exactly 40 or 64 hexadecimal characters"
+  }
+
+  $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+  $startInfo.FileName = $GitExecutable
+  $startInfo.Arguments = "-c core.quotePath=false ls-tree -r -z $CommitSha"
+  $startInfo.UseShellExecute = $false
+  $startInfo.CreateNoWindow = $true
+  $startInfo.RedirectStandardOutput = $true
+  $startInfo.RedirectStandardError = $true
+
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $startInfo
+  $stdout = New-Object System.IO.MemoryStream
+  $started = $false
 
   try {
-    $process = Start-Process -FilePath $GitExecutable `
-      -ArgumentList @("-c", "core.quotePath=false", "ls-tree", "-r", "-z", $CommitSha) `
-      -NoNewWindow -Wait -PassThru `
-      -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
-    if ($process.ExitCode -ne 0) {
-      $stderr = [System.IO.File]::ReadAllText($stderrPath)
-      throw "Unable to read tree for ${CommitSha}: $stderr"
+    $started = $process.Start()
+    if (-not $started) { throw "Unable to start Git tree process for $CommitSha" }
+
+    $stderrTask = $process.StandardError.ReadToEndAsync()
+    $process.StandardOutput.BaseStream.CopyTo($stdout)
+    $process.WaitForExit()
+    $stderr = $stderrTask.GetAwaiter().GetResult()
+    $exitCode = $process.ExitCode
+    if ($exitCode -ne 0) {
+      throw "Unable to read tree for $CommitSha (exit code ${exitCode}): $stderr"
     }
 
-    $bytes = [System.IO.File]::ReadAllBytes($stdoutPath)
+    $bytes = $stdout.ToArray()
     if ($bytes.Length -eq 0) { return @() }
 
     $utf8 = New-Object System.Text.UTF8Encoding($false, $true)
@@ -59,9 +74,20 @@ function Read-GitTreeEntries {
     return $entries
   }
   finally {
-    if (Test-Path -LiteralPath $tempRoot) {
-      Remove-Item -LiteralPath $tempRoot -Recurse -Force
+    if ($started) {
+      try {
+        if (-not $process.HasExited) {
+          $process.Kill()
+          $process.WaitForExit()
+        }
+      }
+      finally {
+        $process.StandardOutput.Dispose()
+        $process.StandardError.Dispose()
+      }
     }
+    $stdout.Dispose()
+    $process.Dispose()
   }
 }
 
