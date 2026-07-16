@@ -1,0 +1,17 @@
+export const IPC = {
+  projectLoad: "project:load",
+  projectSelect: "project:select",
+  configRead: "config:read",
+  configSave: "config:save",
+  configRestoreDefault: "config:restore-default",
+  backupList: "backup:list",
+  backupCreate: "backup:create",
+  backupRestore: "backup:restore",
+  validationRun: "validation:run",
+  validationCancel: "validation:cancel",
+  previewStart: "preview:start",
+  previewStop: "preview:stop",
+  previewRefresh: "preview:refresh",
+  tasksHistory: "tasks:history",
+  tasksEvent: "tasks:event",
+} as const;

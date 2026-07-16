@@ -3,3 +3,10 @@ public/
 .deploy_git/
 db.json
 *.log
+/html_control/node_modules/
+/html_control/dist/
+/html_control/out/
+/html_control/release/
+/html_control/.runtime/
+/html_control/coverage/
+/html_control/.tmp/
