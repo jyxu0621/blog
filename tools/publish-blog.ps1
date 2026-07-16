@@ -5,7 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $Repository = "jyxu0621/blog"
-$Branch = "main"
+$ExpectedBranch = "main"
 $BlogUrl = "https://jyxu0621.github.io/blog/"
 $RepoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $PortableTools = "F:\blog\.local-tools"
@@ -24,14 +24,36 @@ function Invoke-Npm([string[]]$Arguments) {
   Assert-LastExitCode "npm $($Arguments -join ' ')"
 }
 
+function Invoke-GhTextWithRetry(
+  [string[]]$Arguments,
+  [string]$Operation,
+  [int]$MaxAttempts = 3
+) {
+  for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+    $output = & $Gh @Arguments
+    $exitCode = $LASTEXITCODE
+    if ($exitCode -eq 0) {
+      $text = [string]::Join([Environment]::NewLine, @($output))
+      if (-not [string]::IsNullOrWhiteSpace($text)) { return $text.Trim() }
+    }
+    if ($attempt -lt $MaxAttempts) {
+      $delay = [Math]::Pow(2, $attempt - 1)
+      Write-Warning "$Operation failed (attempt $attempt/$MaxAttempts, exit code $exitCode); retrying in $delay second(s)."
+      Start-Sleep -Seconds $delay
+    }
+  }
+  throw "$Operation failed after $MaxAttempts attempts; last exit code $exitCode"
+}
+
 if (-not (Test-Path -LiteralPath $Git)) { throw "Portable Git is missing: $Git" }
 if (-not (Test-Path -LiteralPath $Gh)) { throw "GitHub CLI is missing: $Gh" }
 
 Push-Location $RepoRoot
 try {
-  $branch = (& $Git branch --show-current).Trim()
+  $currentBranchOutput = & $Git branch --show-current
   Assert-LastExitCode "Reading the current branch"
-  if ($branch -ne $Branch) { throw "Publishing is allowed only from $Branch; current branch is $branch" }
+  $currentBranch = [string]::Join([Environment]::NewLine, @($currentBranchOutput)).Trim()
+  if ($currentBranch -ne $ExpectedBranch) { throw "Publishing is allowed only from $ExpectedBranch; current branch is $currentBranch" }
 
   & $Gh auth status --hostname github.com
   Assert-LastExitCode "GitHub CLI authentication check"
@@ -51,9 +73,7 @@ try {
     exit 0
   }
 
-  $remoteSha = (& $Gh api "repos/$Repository/git/ref/heads/$Branch" --jq ".object.sha").Trim()
-  Assert-LastExitCode "Reading remote $Branch"
-  if (-not $remoteSha) { throw "Unable to resolve remote $Branch" }
+  $remoteSha = Invoke-GhTextWithRetry -Arguments @("api", "repos/$Repository/git/ref/heads/$ExpectedBranch", "--jq", ".object.sha") -Operation "Reading remote $ExpectedBranch"
 
   & $Git cat-file -e "$remoteSha`^{commit}"
   if ($LASTEXITCODE -ne 0) {
@@ -61,7 +81,7 @@ try {
   }
   & $Git merge-base --is-ancestor $remoteSha HEAD
   if ($LASTEXITCODE -ne 0) {
-    throw "Remote $Branch is not an ancestor of local HEAD; refusing to overwrite remote history"
+    throw "Remote $ExpectedBranch is not an ancestor of local HEAD; refusing to overwrite remote history"
   }
 
   & $Git add -A
@@ -83,13 +103,13 @@ try {
     exit 0
   }
 
-  & $Git push origin $Branch
+  & $Git push origin $ExpectedBranch
   if ($LASTEXITCODE -ne 0) {
     if (-not (Test-Path -LiteralPath $ExactPublisher)) {
       throw "git push failed and the exact-commit fallback is missing: $ExactPublisher"
     }
     Write-Warning "git push failed; publishing the exact commits through the GitHub API fallback."
-    & $ExactPublisher -Repository $Repository -Branch $Branch
+    & $ExactPublisher -Repository $Repository -Branch $ExpectedBranch
     Assert-LastExitCode "GitHub API fallback publish"
   }
 

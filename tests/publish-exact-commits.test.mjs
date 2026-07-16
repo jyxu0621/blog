@@ -234,3 +234,22 @@ if (!hasInput) {
     rmSync(repository, { recursive: true, force: true });
   }
 });
+
+test("blog publisher keeps the expected main branch separate from the current branch", () => {
+  const source = readFileSync(join(root, "tools", "publish-blog.ps1"), "utf8");
+
+  assert.match(source, /\$ExpectedBranch\s*=\s*"main"/);
+  assert.match(source, /\$currentBranch\s*=.*\.Trim\(\)/);
+  assert.match(source, /\$currentBranch\s+-ne\s+\$ExpectedBranch/);
+  assert.match(source, /git\/ref\/heads\/\$ExpectedBranch/);
+  assert.doesNotMatch(source, /^\s*\$branch\s*=/im);
+});
+
+test("blog publisher retries GitHub reads and checks empty output before trimming", () => {
+  const source = readFileSync(join(root, "tools", "publish-blog.ps1"), "utf8");
+
+  assert.match(source, /function Invoke-GhTextWithRetry/);
+  assert.match(source, /\[string\]::IsNullOrWhiteSpace\(\$text\)/);
+  assert.match(source, /\$MaxAttempts\s*=\s*3/);
+  assert.doesNotMatch(source, /\(& \$Gh api[^\r\n]+\)\.Trim\(\)/);
+});
