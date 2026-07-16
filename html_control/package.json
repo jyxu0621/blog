@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dist:portable": "npm run build && electron-builder --win portable --x64"
+    "dist:portable": "npm run build && electron-builder --win portable --x64 --config.electronDist=./node_modules/electron/dist"
   },
   "dependencies": {
     "@codemirror/lang-yaml": "^6.1.2",
