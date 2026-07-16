@@ -175,7 +175,10 @@ assert.ok(publishedPosts.length > 0, "At least one published post is required");
 for (const post of publishedPosts) {
   assert.ok(existsSync(new URL(post, root)), `Starter post is missing: ${post}`);
   const body = read(post);
-  for (const field of ["cover:", "categories:", "tags:", "description:"]) {
+  // `cover` is optional in Stellar. When it is omitted, the post card is
+  // rendered without an image; only the descriptive taxonomy fields are
+  // required for published posts.
+  for (const field of ["categories:", "tags:", "description:"]) {
     assert.ok(body.includes(field), `${post} is missing ${field}`);
   }
 }
