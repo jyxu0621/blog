@@ -8,6 +8,7 @@ import type { ConfigFileId, EffectiveField } from "../../shared/types";
 import { FieldEditor } from "./components/FieldEditor";
 import { WidgetManager } from "./components/WidgetManager";
 import { SiteTreeEditor } from "./components/SiteTreeEditor";
+import { SaveActionBar } from "./components/SaveActionBar";
 import { createFields, removeDraftValue, updateDraftValue } from "./store/document-model";
 import { dirtyFiles, useAppStore } from "./store/app-store";
 
@@ -17,20 +18,24 @@ interface Section {
   icon: string;
   files: ConfigFileId[];
   roots?: Partial<Record<ConfigFileId, string[]>>;
+  common?: Partial<Record<ConfigFileId, string[]>>;
 }
 
 const sections: Section[] = [
   { id: "brand", title: "站点与品牌", icon: "bi-stars", files: ["hexo", "stellar"], roots: {
     hexo: ["title", "subtitle", "description", "keywords", "author", "language", "timezone"],
     stellar: ["preconnect", "inject", "logo", "open_graph", "structured_data"],
+  }, common: {
+    hexo: ["title", "subtitle", "description", "keywords", "author", "language", "timezone"],
+    stellar: ["logo.avatar", "logo.title", "logo.subtitle", "open_graph.enable", "open_graph.twitter_id"],
   } },
   { id: "navigation", title: "导航与站点结构", icon: "bi-diagram-3", files: ["stellar"], roots: { stellar: ["menubar", "site_tree"] } },
   { id: "widgets", title: "侧边栏组件", icon: "bi-layout-sidebar", files: ["widgets"] },
-  { id: "content", title: "内容默认外观", icon: "bi-file-earmark-text", files: ["stellar"], roots: { stellar: ["article", "notebook"] } },
-  { id: "seo", title: "SEO、搜索与评论", icon: "bi-search", files: ["stellar"], roots: { stellar: ["canonical", "search", "comments", "footer"] } },
-  { id: "integrations", title: "插件与数据服务", icon: "bi-boxes", files: ["stellar"], roots: { stellar: ["tag_plugins", "dependencies", "data_services", "plugins"] } },
-  { id: "appearance", title: "外观与资源", icon: "bi-palette", files: ["stellar"], roots: { stellar: ["stellar", "style", "default", "api_host", "system"] } },
-  { id: "hexo", title: "Hexo 高级设置", icon: "bi-gear", files: ["hexo"] },
+  { id: "content", title: "内容默认外观", icon: "bi-file-earmark-text", files: ["stellar"], roots: { stellar: ["article", "notebook"] }, common: { stellar: ["article.type", "article.indent", "article.cover_ratio", "article.banner_ratio", "article.auto_excerpt", "article.license", "article.share", "article.related_posts.enable", "article.related_posts.max_count", "notebook.auto_excerpt", "notebook.per_page", "notebook.license", "notebook.share"] } },
+  { id: "seo", title: "SEO、搜索与评论", icon: "bi-search", files: ["stellar"], roots: { stellar: ["canonical", "search", "comments", "footer"] }, common: { stellar: ["canonical.originalHost", "canonical.officialHosts", "search.service", "search.local_search.field", "search.local_search.content", "search.local_search.skip_search", "comments.service", "comments.comment_title", "comments.lazyload", "footer.social", "footer.sitemap", "footer.content"] } },
+  { id: "integrations", title: "插件与数据服务", icon: "bi-boxes", files: ["stellar"], roots: { stellar: ["tag_plugins", "dependencies", "data_services", "plugins"] }, common: { stellar: ["plugins.preload.enable", "plugins.fancybox.enable", "plugins.swiper.enable", "plugins.scrollreveal.enable", "plugins.tianli_gpt.enable", "plugins.katex.enable", "plugins.mathjax.enable", "plugins.mermaid.enable", "plugins.copycode.enable", "plugins.heti.enable"] } },
+  { id: "appearance", title: "外观与资源", icon: "bi-palette", files: ["stellar"], roots: { stellar: ["stellar", "style", "default", "api_host", "system"] }, common: { stellar: ["style.prefers_theme", "style.smooth_scroll", "style.font-size.root", "style.font-size.body", "style.font-size.codeblock", "style.font-family.body", "style.color.theme", "style.color.accent", "style.color.link", "style.border-radius.card", "style.animated_avatar.animate", "style.leftbar.background-color", "style.leftbar.background-image", "default.avatar", "default.cover", "default.image"] } },
+  { id: "hexo", title: "Hexo 高级设置", icon: "bi-gear", files: ["hexo"], common: { hexo: ["url", "root", "permalink", "source_dir", "public_dir", "theme", "per_page", "syntax_highlighter", "render_drafts", "post_asset_folder"] } },
 ];
 
 function PageHeader({ title, subtitle }: { title: string; subtitle: string }) {
@@ -75,6 +80,7 @@ function ConfigPage() {
   const { sectionId = "brand" } = useParams();
   const section = sections.find((candidate) => candidate.id === sectionId) ?? sections[0];
   const { documents, drafts, search, setDraft, project } = useAppStore();
+  const [showAll, setShowAll] = useState(false);
   const fieldResult = useMemo(() => {
     try {
       const fields = section.files.flatMap((file) => {
@@ -85,14 +91,17 @@ function ConfigPage() {
           const roots = section.roots?.[file];
           const inSection = !roots || roots.includes(field.schema.path[0]);
           const haystack = [field.schema.label, field.schema.group, field.schema.description, field.schema.path.join(".")].join(" ").toLowerCase();
-          return inSection && (!search || haystack.includes(search.toLowerCase()));
+          const matchesSearch = !search || haystack.includes(search.toLowerCase());
+          const commonPaths = section.common?.[file];
+          const isCommon = !commonPaths || commonPaths.includes(field.schema.path.join("."));
+          return inSection && matchesSearch && (showAll || Boolean(search) || isCommon);
         });
       });
       return { fields, error: "" };
     } catch (error) {
       return { fields: [] as EffectiveField[], error: error instanceof Error ? error.message : String(error) };
     }
-  }, [documents, drafts, search, section]);
+  }, [documents, drafts, search, section, showAll]);
   const fields = fieldResult.fields;
   const parseError = fieldResult.error;
   const update = (field: EffectiveField, value: unknown) => {
@@ -104,7 +113,14 @@ function ConfigPage() {
     if (source !== undefined) setDraft(field.schema.file, removeDraftValue(source, field.schema.path));
   };
   return <>
-    <PageHeader title={section.title} subtitle={`当前显示 ${fields.length} 个可编辑字段；支持按中文名称或 YAML 路径搜索。`} />
+    <PageHeader title={section.title} subtitle={showAll ? `正在显示全部 ${fields.length} 项高级配置。` : `只显示最常用的 ${fields.length} 项；需要时可切换到全部高级设置。`} />
+    {section.common && <div className="simple-mode-bar mb-4">
+      <div><div className="fw-semibold"><i className="bi bi-magic me-2" />简洁模式</div><div className="small text-secondary">常用设置使用中文名称和用途说明，技术键名已收起。</div></div>
+      <div className="btn-group" role="group" aria-label="设置显示范围">
+        <button type="button" className={`btn btn-sm ${!showAll ? "btn-primary" : "btn-outline-secondary"}`} onClick={() => setShowAll(false)}>常用设置</button>
+        <button type="button" className={`btn btn-sm ${showAll ? "btn-primary" : "btn-outline-secondary"}`} onClick={() => setShowAll(true)}>全部高级设置</button>
+      </div>
+    </div>}
     {!project?.compatible && <div className="alert alert-danger">Stellar 版本不兼容，结构化编辑已停用。</div>}
     {parseError && <div className="alert alert-danger">{parseError}</div>}
     {section.id === "widgets" && drafts.widgets !== undefined && drafts.stellar !== undefined && <WidgetManager widgetsSource={drafts.widgets} stellarSource={drafts.stellar} onWidgetsChange={(source) => setDraft("widgets", source)} onStellarChange={(source) => setDraft("stellar", source)} />}
@@ -154,8 +170,10 @@ function SaveDialog() {
   const files = dirtyFiles(state);
   const [open, setOpen] = useState(false);
   const diff = files.map((file) => createTwoFilesPatch(state.documents[file]?.path ?? file, state.documents[file]?.path ?? file, state.documents[file]?.source ?? "", state.drafts[file] ?? "", "当前文件", "待保存")).join("\n");
-  if (files.length === 0) return null;
-  return <div className="sticky-actions"><div className="container-fluid d-flex align-items-center justify-content-between"><span className="text-primary fw-semibold"><i className="bi bi-pencil-square me-2" />{files.length} 个配置文件有未保存修改</span><button className="btn btn-primary" onClick={() => setOpen(true)}>查看差异并保存</button></div>{open && <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,.55)" }}><div className="modal-dialog modal-xl modal-dialog-centered"><div className="modal-content"><div className="modal-header"><h5 className="modal-title">确认配置差异</h5><button className="btn-close" onClick={() => setOpen(false)} /></div><div className="modal-body"><pre className="diff-view">{diff}</pre></div><div className="modal-footer"><button className="btn btn-outline-secondary" onClick={() => setOpen(false)}>取消</button><button disabled={state.busy || !state.project?.compatible} className="btn btn-primary" onClick={() => void state.saveFiles(files).then(() => setOpen(false))}>创建备份并保存</button></div></div></div></div>}</div>;
+  return <>
+    <SaveActionBar dirtyCount={files.length} busy={state.busy} compatible={Boolean(state.project?.compatible)} onSave={() => setOpen(true)} />
+    {open && <div className="modal d-block" tabIndex={-1} style={{ background: "rgba(0,0,0,.55)" }}><div className="modal-dialog modal-xl modal-dialog-centered"><div className="modal-content"><div className="modal-header"><h5 className="modal-title">确认配置差异</h5><button className="btn-close" onClick={() => setOpen(false)} /></div><div className="modal-body"><div className="alert alert-info py-2"><i className="bi bi-info-circle me-2" />确认后会先创建联合备份，再写入配置；不会执行 Git 提交或网站部署。</div><pre className="diff-view">{diff}</pre></div><div className="modal-footer"><button className="btn btn-outline-secondary" onClick={() => setOpen(false)}>取消</button><button disabled={state.busy || !state.project?.compatible} className="btn btn-primary" onClick={() => void state.saveFiles(files).then(() => setOpen(false))}><i className="bi bi-save2 me-2" />创建备份并保存配置</button></div></div></div></div>}
+  </>;
 }
 
 function Shell() {

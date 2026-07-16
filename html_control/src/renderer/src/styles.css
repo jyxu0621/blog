@@ -1,7 +1,7 @@
 :root { color-scheme: light dark; }
 body { overflow: hidden; }
 .app-wrapper { height: 100vh; }
-.app-main { overflow: auto; }
+.app-main { overflow: auto; padding-bottom: 98px; }
 .app-sidebar .nav-link { cursor: pointer; }
 .brand-text { letter-spacing: .02em; }
 .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1rem; }
@@ -11,7 +11,21 @@ body { overflow: hidden; }
 .preview-shell iframe { width: 100%; height: 100%; border: 0; background: white; border-radius: 6px; }
 .yaml-editor { border: 1px solid var(--bs-border-color); border-radius: .5rem; overflow: hidden; }
 .diff-view { max-height: 55vh; overflow: auto; background: #111827; color: #d1d5db; padding: 1rem; font: 12px/1.5 Consolas, monospace; white-space: pre-wrap; }
-.sticky-actions { position: sticky; bottom: 0; z-index: 20; background: color-mix(in srgb, var(--bs-body-bg) 92%, transparent); backdrop-filter: blur(12px); border-top: 1px solid var(--bs-border-color); padding: .75rem 0; }
+.save-action-bar { position: fixed; left: 250px; right: 0; bottom: 0; z-index: 1035; min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1rem 1.5rem; background: color-mix(in srgb, var(--bs-body-bg) 96%, transparent); backdrop-filter: blur(14px); border-top: 1px solid var(--bs-border-color); box-shadow: 0 -8px 24px rgba(0, 0, 0, .08); }
+.save-action-status { min-width: 0; }
+.save-primary-button { min-width: 210px; white-space: nowrap; }
+.sidebar-collapse .save-action-bar { left: 0; }
 .sidebar-chip { cursor: grab; display: inline-flex; align-items: center; padding: .55rem .7rem; }
 .sidebar-chip:active { cursor: grabbing; }
+.simple-mode-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border: 1px solid var(--bs-border-color); border-radius: .65rem; background: color-mix(in srgb, var(--bs-primary-bg-subtle) 45%, var(--bs-body-bg)); }
+.field-technical { color: var(--bs-secondary-color); font-size: .78rem; }
+.field-technical summary { cursor: pointer; user-select: none; }
+.field-technical code { display: block; margin-top: .3rem; word-break: break-all; }
 @media (max-width: 1200px) { .config-grid { grid-template-columns: 1fr; } }
+@media (max-width: 991.98px) { .save-action-bar { left: 0; } }
+@media (max-width: 640px) {
+  .app-main { padding-bottom: 144px; }
+  .save-action-bar { min-height: 128px; align-items: stretch; flex-direction: column; gap: .65rem; padding: .8rem 1rem; }
+  .save-primary-button { width: 100%; min-width: 0; }
+  .simple-mode-bar { align-items: stretch; flex-direction: column; }
+}

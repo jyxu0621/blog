@@ -38,4 +38,17 @@ describe("Stellar schema", () => {
     expect(fields.find((field) => field.path[0] === "root")?.critical).toBe(true);
     expect(fields.find((field) => field.path[0] === "title")?.critical).toBe(false);
   });
+
+  it("uses friendly Chinese names and explanations for common settings", () => {
+    const fields = buildSchema("stellar", {
+      open_graph: { enable: true, twitter_id: "" },
+      search: { local_search: { skip_search: [] } },
+      style: { "font-size": { codeblock: "14px" } },
+    });
+
+    expect(fields.find((field) => field.path.join(".") === "open_graph.enable")?.label).toBe("生成社交分享信息");
+    expect(fields.find((field) => field.path.join(".") === "search.local_search.skip_search")?.label).toBe("不参与搜索的页面");
+    expect(fields.find((field) => field.path.join(".") === "style.font-size.codeblock")?.label).toBe("代码块字号");
+    expect(fields.find((field) => field.path.join(".") === "open_graph.enable")?.description).toContain("分享");
+  });
 });

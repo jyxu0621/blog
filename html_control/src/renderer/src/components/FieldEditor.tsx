@@ -125,7 +125,6 @@ export function FieldEditor({ field, onChange, onRestoreDefault }: Props) {
         <div className="d-flex justify-content-between align-items-start gap-3 mb-2">
           <div>
             <label className="form-label fw-semibold mb-0">{schema.label}</label>
-            <div className="text-secondary small font-monospace">{schema.path.join(".")}</div>
           </div>
           <div className="d-flex gap-2">
             {schema.critical && <span className="badge text-bg-warning">关键配置</span>}
@@ -134,8 +133,11 @@ export function FieldEditor({ field, onChange, onRestoreDefault }: Props) {
         </div>
         <p className="text-secondary small">{schema.description}</p>
         {control}
-        <div className="d-flex justify-content-between mt-2">
-          {schema.helpUrl ? <a className="small" href={schema.helpUrl} target="_blank" rel="noreferrer">官方说明</a> : <span />}
+        <div className="d-flex justify-content-between align-items-end mt-2 gap-3">
+          <div>
+            {schema.helpUrl && <a className="small" href={schema.helpUrl} target="_blank" rel="noreferrer"><i className="bi bi-book me-1" />查看官方说明</a>}
+            <details className="field-technical mt-1"><summary>查看技术信息</summary><code>{schema.path.join(".")}</code></details>
+          </div>
           {field.source === "override" && <button type="button" className="btn btn-sm btn-link" onClick={onRestoreDefault}>恢复主题默认</button>}
         </div>
         {field.errors.map((error) => <div key={error} className="text-danger small mt-1">{error}</div>)}

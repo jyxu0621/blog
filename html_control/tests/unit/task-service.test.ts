@@ -54,9 +54,10 @@ describe("TaskService", () => {
     const pipeline = service.runPipeline("cancel", process.cwd(), [
       { phase: "long", command: process.execPath, args: ["-e", "setTimeout(() => {}, 30000)"] },
     ]);
+    const rejected = expect(pipeline).rejects.toThrow();
     await started;
     await service.cancel(taskId);
-    await expect(pipeline).rejects.toThrow();
+    await rejected;
   });
 });
 
