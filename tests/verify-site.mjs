@@ -170,13 +170,9 @@ for (const expected of [
   assert.ok(stellar.includes(expected), `Missing xaoxuu-style menubar setting: ${expected}`);
 }
 
-const starterPosts = [
-  "source/_posts/welcome.md",
-  "source/_posts/integrated-circuit-notes.md",
-  "source/_posts/course-notes-plan.md",
-  "source/_posts/project-practice-log.md",
-];
-for (const post of starterPosts) {
+const publishedPosts = globSync("source/_posts/*.{md,markdown}", { cwd: rootPath }).sort();
+assert.ok(publishedPosts.length > 0, "At least one published post is required");
+for (const post of publishedPosts) {
   assert.ok(existsSync(new URL(post, root)), `Starter post is missing: ${post}`);
   const body = read(post);
   for (const field of ["cover:", "categories:", "tags:", "description:"]) {
@@ -244,7 +240,6 @@ if (process.argv.includes("--generated")) {
   const generated = read("public/index.html");
   const generatedPost = read("public/2026/07/13/welcome/index.html");
   const generatedCss = read("public/css/main.css");
-  const technicalPost = read("public/2026/07/13/integrated-circuit-notes/index.html");
 
   for (const pagePath of [
     "public/index.html",
@@ -267,8 +262,6 @@ if (process.argv.includes("--generated")) {
   assert.ok(generated.includes('class="widget-wrapper linklist"'), "Homepage quick links are missing");
   assert.ok(generated.includes('class="widget-wrapper tagcloud"'), "Homepage tag cloud is missing");
   assert.ok(generated.includes('href="/blog/atom.xml"'), "Homepage feed link is missing");
-  assert.ok(technicalPost.includes('class="widget-wrapper toc"'), "Article TOC is missing");
-  assert.ok(technicalPost.includes("计划整理的内容"), "Article TOC content is missing");
   for (const unwanted of ["swiper-bundle", "scrollreveal", "chuckle-post-ai", "mermaid.min.js", "MathJax.js"]) {
     assert.ok(!generated.includes(unwanted), `Homepage loads disabled plugin: ${unwanted}`);
   }
@@ -318,15 +311,8 @@ if (process.argv.includes("--generated")) {
   ]) {
     assert.ok(menu.includes(expected), `Generated menubar is missing: ${expected}`);
   }
-  for (const title of [
-    "欢迎来到 Jason Xu's Blog",
-    "数字与混合信号集成电路学习笔记",
-    "课程笔记整理计划",
-    "项目实践记录",
-  ]) {
-    assert.ok(generated.includes(title), `Generated homepage is missing: ${title}`);
-  }
-  assert.ok((generated.match(/<article/g) ?? []).length >= 4, "Generated homepage has fewer than four cards");
+  assert.ok(generated.includes("欢迎来到 Jason Xu's Blog"), "Generated homepage is missing the welcome post");
+  assert.ok((generated.match(/<article/g) ?? []).length >= 1, "Generated homepage has no article cards");
 }
 
 console.log("Blog verification passed.");

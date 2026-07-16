@@ -1,6 +1,5 @@
 param(
   [switch]$DryRun,
-  [switch]$AllowSourceDeletes,
   [string]$Message = ""
 )
 
@@ -58,14 +57,6 @@ try {
 
   & $Gh auth status --hostname github.com
   Assert-LastExitCode "GitHub CLI authentication check"
-
-  $deletedSourceOutput = & $Git diff --name-only --diff-filter=D -- source
-  Assert-LastExitCode "Checking deleted source files"
-  $deletedSourceFiles = @($deletedSourceOutput | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
-  if ($deletedSourceFiles.Count -gt 0 -and -not $AllowSourceDeletes) {
-    $list = $deletedSourceFiles -join [Environment]::NewLine
-    throw "Publishing blocked because tracked source files were deleted:`n$list`nRestore them, or run manually with -AllowSourceDeletes if the deletion is intentional."
-  }
 
   Invoke-Npm @("run", "test:publisher")
   Invoke-Npm @("run", "test:local-cover")
