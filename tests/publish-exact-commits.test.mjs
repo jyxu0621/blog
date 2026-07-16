@@ -253,3 +253,12 @@ test("blog publisher retries GitHub reads and checks empty output before trimmin
   assert.match(source, /\$MaxAttempts\s*=\s*3/);
   assert.doesNotMatch(source, /\(& \$Gh api[^\r\n]+\)\.Trim\(\)/);
 });
+
+test("blog publisher blocks source deletions unless explicitly allowed", () => {
+  const source = readFileSync(join(root, "tools", "publish-blog.ps1"), "utf8");
+
+  assert.match(source, /\[switch\]\$AllowSourceDeletes/);
+  assert.match(source, /diff --name-only --diff-filter=D -- source/);
+  assert.match(source, /-not \$AllowSourceDeletes/);
+  assert.match(source, /Publishing blocked because tracked source files were deleted/);
+});
