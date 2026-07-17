@@ -265,6 +265,10 @@ if (process.argv.includes("--generated")) {
   assert.ok(generated.includes('class="widget-wrapper linklist"'), "Homepage quick links are missing");
   assert.ok(generated.includes('class="widget-wrapper tagcloud"'), "Homepage tag cloud is missing");
   assert.ok(generated.includes('href="/blog/atom.xml"'), "Homepage feed link is missing");
+  assert.ok(
+    !generated.includes('href="/blog/blog/atom.xml"'),
+    "Footer feed link contains the site root twice",
+  );
   for (const unwanted of ["swiper-bundle", "scrollreveal", "chuckle-post-ai", "mermaid.min.js", "MathJax.js"]) {
     assert.ok(!generated.includes(unwanted), `Homepage loads disabled plugin: ${unwanted}`);
   }
