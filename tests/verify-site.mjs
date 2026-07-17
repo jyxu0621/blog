@@ -185,7 +185,7 @@ for (const post of publishedPosts) {
 
 for (const expected of [
   "Jason Xu's Blog",
-  "https://github.com/jyxu0621.png",
+  "https://raw.githubusercontent.com/jyxu0621/image-bed/main/20260717102741820.webp",
   "url: /archives/",
   "url: https://github.com/jyxu0621",
 ]) {
