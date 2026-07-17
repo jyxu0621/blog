@@ -127,6 +127,13 @@
       runner: "Ubuntu",
       ...(siteData.build || {}),
     };
+    const buildIcons = {
+      platform: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .7a11.3 11.3 0 0 0-3.6 22c.6.1.8-.2.8-.5v-2c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5.7 18 6 18 6c.6 1.6.2 2.9.1 3.2a4.7 4.7 0 0 1 1.2 3.2c0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5A11.3 11.3 0 0 0 12 .7Z"/></svg>',
+      storage: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 18.5h10.5a4.3 4.3 0 0 0 .2-8.6A6.2 6.2 0 0 0 6.2 8.4a5.1 5.1 0 0 0 1 10.1Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 15.2h8M10 12.4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      software: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.7 20 7v10l-8 4.3L4 17V7l8-4.3Zm0 0V12m8-5-8 5m-8-5 8 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+      article: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4 4V20H7V3.5Zm7 0v4h4M10 12h5m-5 3h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      domain: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 12h18M12 3c2.3 2.5 3.5 5.5 3.5 9S14.3 18.5 12 21c-2.3-2.5-3.5-5.5-3.5-9S9.7 5.5 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>',
+    };
     const widget = document.createElement("widget");
     widget.className = "widget-wrapper clarity-stats-widget";
     widget.innerHTML = `
@@ -139,11 +146,11 @@
       <div class="widget-header clarity-build-title dis-select"><span class="name">技术信息</span></div>
       <div class="clarity-build-card">
         <dl class="clarity-build-list">
-          <div><dt>构建平台</dt><dd>${escapeHTML(build.platform)}</dd></div>
-          <div><dt>图片存储</dt><dd>${escapeHTML(build.imageStorage)}</dd></div>
-          <div><dt>软件协议</dt><dd>${escapeHTML(build.license)}</dd></div>
-          <div><dt>文章许可</dt><dd>${escapeHTML(build.articleLicense)}</dd></div>
-          <div><dt>规范域名</dt><dd>${escapeHTML(build.canonical)}</dd></div>
+          <div><dt>构建平台</dt><dd>${buildIcons.platform}${escapeHTML(build.platform)}</dd></div>
+          <div><dt>图片存储</dt><dd class="clarity-build-storage">${buildIcons.storage}${escapeHTML(build.imageStorage)}</dd></div>
+          <div><dt>软件协议</dt><dd>${buildIcons.software}${escapeHTML(build.license)}</dd></div>
+          <div><dt>文章许可</dt><dd>${buildIcons.article}${escapeHTML(build.articleLicense)}</dd></div>
+          <div><dt>规范域名</dt><dd>${buildIcons.domain}${escapeHTML(build.canonical)}</dd></div>
         </dl>
         <details class="clarity-build-details" open>
           <summary><span class="clarity-build-collapse">收起构建信息</span><span class="clarity-build-expand">展开构建信息</span></summary>
