@@ -381,11 +381,20 @@ body.clarity-search-open .search-wrapper {
   color: var(--text-p2);
 }
 
-.clarity-archive-year { display: contents; }
+.clarity-archive-year {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.clarity-archive-year > .archive-list {
+  width: 100%;
+}
 
 .post-list.archives .archive-header {
-  position: sticky;
-  top: 3.5rem;
+  position: relative;
   width: fit-content;
   padding: 0.2rem 0.65rem;
   border-radius: 0.5rem;

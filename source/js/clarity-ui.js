@@ -146,12 +146,16 @@
     const links = [...archive.querySelectorAll(".archive-list a.post")];
     const groups = [];
     [...archive.querySelectorAll(":scope > .archive-header")].forEach((header) => {
-      const list = header.nextElementSibling;
-      if (!list?.classList.contains("archive-list")) return;
       const group = document.createElement("section");
       group.className = "clarity-archive-year";
       header.before(group);
-      group.append(header, list);
+      group.append(header);
+      let sibling = group.nextElementSibling;
+      while (sibling?.classList.contains("archive-list")) {
+        const next = sibling.nextElementSibling;
+        group.append(sibling);
+        sibling = next;
+      }
       groups.push(group);
     });
     const controls = document.createElement("div");
@@ -164,8 +168,9 @@
       if (!button || button.dataset.order === currentOrder) return;
       currentOrder = button.dataset.order;
       groups.reverse().forEach((group) => {
-        const list = group.querySelector(".archive-list");
-        [...list.children].reverse().forEach((item) => list.append(item));
+        [...group.querySelectorAll(":scope > .archive-list")]
+          .reverse()
+          .forEach((list) => group.append(list));
         archive.append(group);
       });
       controls.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
