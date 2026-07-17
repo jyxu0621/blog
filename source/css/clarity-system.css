@@ -1,0 +1,518 @@
+/* Clarity-inspired design layer for Stellar. Kept outside the theme package. */
+
+:root {
+  --clarity-primary: #2677ff;
+  --clarity-primary-soft: rgb(38 119 255 / 14%);
+  --clarity-accent: #48cfc7;
+  --clarity-text: var(--text-p1);
+  --clarity-text-2: var(--text-p2);
+  --clarity-text-3: var(--text-p3);
+  --clarity-card: var(--card);
+  --clarity-surface: var(--block);
+  --clarity-border: color-mix(in srgb, var(--text-p4) 24%, transparent);
+  --clarity-shadow-1: 0 0.1em 0.25em rgb(20 40 80 / 8%);
+  --clarity-shadow-2: 0 0.3em 0.8em rgb(20 40 80 / 12%);
+  --clarity-shadow-3: 0 0.6em 1.4em rgb(20 40 80 / 16%);
+  --clarity-radius: 0.8rem;
+  --clarity-delay: 0.2s;
+  --clarity-font-creative: "LXGW WenKai Screen", system-ui, sans-serif;
+  --clarity-font-serif: "Noto Serif SC", "Songti SC", SimSun, serif;
+}
+
+[data-theme="dark"] {
+  --clarity-primary: #78a8ff;
+  --clarity-primary-soft: rgb(85 145 255 / 20%);
+  --clarity-accent: #62d9cf;
+  --clarity-shadow-1: 0 0.1em 0.25em rgb(0 0 0 / 22%);
+  --clarity-shadow-2: 0 0.3em 0.8em rgb(0 0 0 / 28%);
+  --clarity-shadow-3: 0 0.6em 1.4em rgb(0 0 0 / 35%);
+}
+
+/* Phase 1: card language and restrained motion. */
+.post-list .post-card,
+.clarity-card,
+.widget-wrapper {
+  transition: transform var(--clarity-delay), box-shadow var(--clarity-delay),
+    border-color var(--clarity-delay), background-color var(--clarity-delay);
+}
+
+.post-list .post-card:hover,
+.clarity-card.clarity-upraise:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--clarity-shadow-3);
+}
+
+.clarity-gradient-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.clarity-gradient-card::before {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  background:
+    linear-gradient(var(--clarity-card), var(--clarity-card)) padding-box,
+    linear-gradient(45deg, var(--clarity-accent), var(--clarity-primary-soft)) border-box;
+  transition: opacity var(--clarity-delay);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.clarity-gradient-card:hover::before,
+.clarity-gradient-card:focus-within::before,
+.clarity-gradient-card.active::before {
+  opacity: 1;
+}
+
+@keyframes clarity-float-in {
+  from { opacity: 0; transform: translateY(0.7rem); }
+  to { opacity: 1; transform: none; }
+}
+
+.post-list.post > .post-card.post {
+  animation: clarity-float-in 0.24s var(--clarity-item-delay, 0s) backwards;
+}
+
+/* Technical and story article modes. */
+.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6),
+.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6) {
+  font-family: var(--clarity-font-creative);
+}
+
+.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6)::before,
+.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6)::before {
+  content: "";
+  display: inline-block;
+  width: 0.38em;
+  height: 0.72em;
+  margin-inline-end: 0.45em;
+  border-radius: 0.18em;
+  background: var(--clarity-primary);
+  vertical-align: 0.04em;
+}
+
+.clarity-story .md-text.content,
+.clarity-story article.md-text {
+  font-family: var(--clarity-font-serif);
+}
+
+.clarity-story .md-text.content > :is(h1, h2, h3, h4, h5, h6),
+.clarity-story article.md-text > :is(h1, h2, h3, h4, h5, h6) {
+  position: relative;
+  font-family: var(--clarity-font-serif);
+  font-weight: 700;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.clarity-story .md-text.content > h2::before,
+.clarity-story article.md-text > h2::before {
+  content: "";
+  position: absolute;
+  width: 2.4em;
+  height: 2.4em;
+  margin: -0.35em 0 0 -0.65em;
+  border-radius: 50%;
+  background: linear-gradient(var(--clarity-primary-soft), transparent);
+  z-index: -1;
+}
+
+.clarity-story .md-text.content > p,
+.clarity-story article.md-text > p {
+  text-indent: 2em;
+}
+
+.md-text.content strong,
+article.md-text strong {
+  background: linear-gradient(var(--clarity-primary-soft), var(--clarity-primary-soft))
+    no-repeat center bottom / 100% 32%;
+}
+
+.md-text.content :is(p, li, table) a:not([class]),
+article.md-text :is(p, li, table) a:not([class]) {
+  padding-bottom: 0.1em;
+  color: var(--theme-link);
+  background: linear-gradient(currentcolor, currentcolor) no-repeat center bottom / 100% 1px;
+  transition: background-size var(--clarity-delay), color var(--clarity-delay);
+}
+
+.md-text.content :is(p, li, table) a:not([class]):hover,
+article.md-text :is(p, li, table) a:not([class]):hover {
+  background-size: 100% 3px;
+}
+
+.md-text.content img:not([class]),
+article.md-text img:not([class]) {
+  min-height: 2rem;
+  border-radius: 0.55rem;
+  background: var(--clarity-surface);
+}
+
+/* Phase 2: metadata, header, tags and post surroundings. */
+.clarity-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  position: relative;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  z-index: 1;
+}
+
+.clarity-tag {
+  padding: 0.08rem 0.4rem;
+  border-radius: 0.45rem;
+  background: var(--clarity-primary-soft);
+  color: var(--clarity-primary);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.clarity-words {
+  white-space: nowrap;
+}
+
+.article.banner.top {
+  contain: paint;
+  border-radius: 1rem;
+  box-shadow: var(--clarity-shadow-1);
+}
+
+.clarity-post-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  margin-inline-start: 1em;
+  color: var(--text-p2);
+}
+
+#read-next .related-posts,
+#read-next .related-wrap,
+#read-next .item {
+  border-radius: var(--clarity-radius);
+}
+
+#read-next a {
+  transition: color var(--clarity-delay), transform var(--clarity-delay);
+}
+
+#read-next a:hover {
+  color: var(--clarity-primary);
+  transform: translateY(-2px);
+}
+
+/* Phase 3: featured strip, filters, stats, search and footer. */
+.clarity-featured {
+  margin: 1rem;
+}
+
+.clarity-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  min-height: 2.8rem;
+  margin-bottom: -0.15rem;
+  color: var(--text-p3);
+  mask-image: linear-gradient(#000, transparent);
+}
+
+.clarity-section-heading strong {
+  font-family: var(--clarity-font-creative);
+  font-size: clamp(1.8rem, 8vw, 3rem);
+  line-height: 1;
+}
+
+.clarity-featured-track {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding: 0.2rem 1.2rem 0.65rem;
+  margin-inline: -1.2rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  mask-image: linear-gradient(to right, transparent, #000 1.2rem, #000 calc(100% - 1.2rem), transparent);
+}
+
+.clarity-featured-item {
+  contain: paint;
+  flex: 0 0 clamp(12rem, 42%, 18rem);
+  position: relative;
+  aspect-ratio: 1.77;
+  border-radius: 0.65rem;
+  box-shadow: var(--clarity-shadow-1);
+  background: var(--clarity-surface);
+  color: #fff;
+  scroll-snap-align: center;
+}
+
+.clarity-featured-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s, filter 0.35s;
+}
+
+.clarity-featured-item span {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 1.2rem 0.75rem 0.55rem;
+  background: linear-gradient(transparent, rgb(0 0 0 / 65%));
+  font-family: var(--clarity-font-creative);
+  text-shadow: 0 1px 3px #000;
+}
+
+.clarity-featured-item:hover img {
+  transform: scale(1.04);
+  filter: saturate(1.15);
+}
+
+.clarity-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.5rem 0 1rem;
+  color: var(--text-p2);
+}
+
+.clarity-toolbar button,
+.clarity-archive-tools button {
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  background: var(--block);
+  color: inherit;
+  transition: color var(--clarity-delay), background-color var(--clarity-delay);
+}
+
+.clarity-toolbar button:hover,
+.clarity-toolbar button.active,
+.clarity-archive-tools button:hover,
+.clarity-archive-tools button.active {
+  background: var(--clarity-primary-soft);
+  color: var(--clarity-primary);
+}
+
+.clarity-toolbar .clarity-toolbar-spacer {
+  flex: 1;
+}
+
+.clarity-post-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.65rem;
+}
+
+.clarity-post-stats div {
+  text-align: center;
+}
+
+.clarity-post-stats strong,
+.clarity-post-stats span {
+  display: block;
+}
+
+.clarity-post-stats strong {
+  font-size: 1.15rem;
+  color: var(--text-p1);
+}
+
+.clarity-post-stats span {
+  font-size: 0.7rem;
+  color: var(--text-p3);
+}
+
+.search-wrapper {
+  border-radius: 0.65rem;
+}
+
+.search-wrapper .search-form {
+  border: 2px solid var(--clarity-border);
+  border-radius: 0.65rem;
+  transition: border-color var(--clarity-delay), box-shadow var(--clarity-delay);
+}
+
+.search-wrapper:focus-within .search-form {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--clarity-primary-soft), var(--clarity-shadow-2);
+}
+
+#search-result {
+  border-radius: 0.7rem;
+  box-shadow: var(--clarity-shadow-3);
+}
+
+.clarity-search-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgb(15 23 42 / 42%);
+  backdrop-filter: blur(4px);
+}
+
+body.clarity-search-open { overflow: hidden; }
+body.clarity-search-open .clarity-search-backdrop { display: block; }
+
+body.clarity-search-open .search-wrapper {
+  position: fixed;
+  top: 12vh;
+  left: 50%;
+  z-index: 91;
+  width: min(42rem, calc(100vw - 2rem));
+  max-height: 76vh;
+  padding: 0.75rem;
+  overflow: auto;
+  border: 1px solid var(--clarity-border);
+  background: var(--card);
+  box-shadow: var(--clarity-shadow-3);
+  transform: translateX(-50%);
+}
+
+.page-footer .sitemap-group a {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  width: fit-content;
+  padding: 0.25em 0.45em;
+  border-radius: 0.45em;
+  transition: background-color var(--clarity-delay), color var(--clarity-delay);
+}
+
+.page-footer .sitemap-group a:hover {
+  background: var(--clarity-primary-soft);
+  color: var(--clarity-primary);
+}
+
+.clarity-footer-icon {
+  width: 1.1em;
+  text-align: center;
+}
+
+/* Phase 4: code folding, archive tuning and mobile panels. */
+.clarity-code-wrap {
+  position: relative;
+}
+
+.clarity-code-wrap.is-collapsible .highlight {
+  max-height: 24rem;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.clarity-code-wrap.is-collapsible:not(.expanded)::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 2.2rem;
+  height: 5rem;
+  background: linear-gradient(transparent, var(--card));
+  pointer-events: none;
+}
+
+.clarity-code-wrap.expanded .highlight {
+  max-height: none;
+}
+
+.clarity-code-toggle {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0.45rem;
+  border-radius: 0 0 0.55rem 0.55rem;
+  background: var(--block);
+  color: var(--text-p2);
+  z-index: 1;
+}
+
+.clarity-code-toggle:hover {
+  color: var(--clarity-primary);
+}
+
+.clarity-archive-summary,
+.clarity-archive-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.8rem 0;
+  color: var(--text-p2);
+}
+
+.clarity-archive-year { display: contents; }
+
+.post-list.archives .archive-header {
+  position: sticky;
+  top: 3.5rem;
+  width: fit-content;
+  padding: 0.2rem 0.65rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  backdrop-filter: blur(0.6rem);
+  color: var(--text-p1);
+  z-index: 2;
+}
+
+.post-list.archives .archive-list a.post {
+  border-radius: 0.5rem;
+  transition: background-color var(--clarity-delay), transform var(--clarity-delay);
+}
+
+.post-list.archives .archive-list a.post:hover {
+  background: var(--clarity-primary-soft);
+  transform: translateX(0.25rem);
+}
+
+.float-panel {
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  backdrop-filter: blur(0.65rem);
+  box-shadow: var(--clarity-shadow-2);
+}
+
+@media (max-width: 528px) {
+  .clarity-featured {
+    margin-inline: 0.75rem;
+  }
+
+  .clarity-featured-item {
+    flex-basis: 78%;
+  }
+
+  .clarity-toolbar {
+    align-items: stretch;
+  }
+
+  .clarity-toolbar .clarity-toolbar-spacer {
+    display: none;
+  }
+
+  .clarity-toolbar button {
+    flex: 1 1 auto;
+  }
+
+  .article.banner.top {
+    border-radius: 0;
+  }
+
+  .clarity-story .md-text.content > p,
+  .clarity-story article.md-text > p {
+    text-indent: 1.5em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-list.post > .post-card.post,
+  .post-list .post-card,
+  .clarity-card,
+  .clarity-featured-item img,
+  .clarity-code-wrap .highlight {
+    animation: none;
+    transition: none;
+  }
+}

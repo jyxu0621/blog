@@ -8,6 +8,7 @@
     "build": "hexo generate",
     "dev": "hexo server",
     "test:local-cover": "node --test tests/local-cover.test.mjs",
+    "test:clarity": "node --test tests/clarity-enhancements.test.mjs",
     "test:publisher": "node --test tests/publish-exact-commits.test.mjs",
     "verify:site": "node tests/verify-site.mjs",
     "verify:advanced": "node tests/verify-advanced.mjs"
