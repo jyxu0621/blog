@@ -5,6 +5,7 @@ inject:
   head:
     - "<link rel=\"stylesheet\" href=\"https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css\" media=\"print\" onload=\"this.media='all'\">"
     - '<noscript><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css"></noscript>'
+    - '<link rel="stylesheet" href="/blog/css/article-card-cover.css">'
 
 canonical:
   originalHost: jyxu0621.github.io

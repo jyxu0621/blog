@@ -1,0 +1,110 @@
+/* Clarity-inspired post cards: right-side fading cover on wide cards. */
+
+.post-list .post-card.post:not(.photo) {
+  container-type: inline-size;
+}
+
+.post-list .post-card.post:not(.photo) > article.md-text {
+  position: relative;
+  min-height: 9.5rem;
+  padding-right: calc(40% + 1rem);
+}
+
+.post-list .post-card.post:not(.photo) .post-cover {
+  position: absolute;
+  z-index: 0;
+  inset: 0 0 0 auto;
+  width: calc(40% + 2rem);
+  height: 100%;
+  margin: 0;
+  opacity: 0.82;
+  background: var(--block);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 50%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 50%);
+  transition: opacity 0.2s ease;
+}
+
+.post-list .post-card.post:not(.photo) .post-cover img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+}
+
+.post-list .post-card.post:not(.photo) .post-title,
+.post-list .post-card.post:not(.photo) .excerpt,
+.post-list .post-card.post:not(.photo) .meta {
+  position: relative;
+  z-index: 1;
+}
+
+.post-list .post-card.post:not(.photo):hover .post-cover {
+  opacity: 1;
+}
+
+@media screen and (max-width: 528px) {
+  .post-list .post-card.post:not(.photo) > article.md-text {
+    min-height: 0;
+    padding-right: 1rem;
+  }
+
+  .post-list .post-card.post:not(.photo) .post-cover {
+    position: relative;
+    inset: auto;
+    width: calc(100% + 2rem);
+    height: auto;
+    max-height: 256px;
+    aspect-ratio: 2.4;
+    margin: -0.5rem -1rem -10%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+  }
+
+  .post-list .post-card.post:not(.photo) .post-cover img {
+    aspect-ratio: 2.4;
+  }
+
+  .post-list .post-card.post:not(.photo) .post-title {
+    text-shadow:
+      0 0 0.2em var(--card),
+      0 0 0.5em var(--card),
+      0 0 1em var(--card);
+  }
+}
+
+@container (max-width: 528px) {
+  .post-list .post-card.post:not(.photo) > article.md-text {
+    min-height: 0;
+    padding-right: 1rem;
+  }
+
+  .post-list .post-card.post:not(.photo) .post-cover {
+    position: relative;
+    inset: auto;
+    width: calc(100% + 2rem);
+    height: auto;
+    max-height: 256px;
+    aspect-ratio: 2.4;
+    margin: -0.5rem -1rem -10%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 50%, transparent 100%);
+  }
+
+  .post-list .post-card.post:not(.photo) .post-cover img {
+    aspect-ratio: 2.4;
+  }
+
+  .post-list .post-card.post:not(.photo) .post-title {
+    text-shadow:
+      0 0 0.2em var(--card),
+      0 0 0.5em var(--card),
+      0 0 1em var(--card);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .post-list .post-card.post:not(.photo) .post-cover {
+    transition: none;
+  }
+}
