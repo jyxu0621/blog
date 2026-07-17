@@ -78,13 +78,13 @@
 }
 
 /* Technical and story article modes. */
-.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6),
-.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6) {
+body.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6),
+body.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6) {
   font-family: var(--clarity-font-creative);
 }
 
-.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6)::before,
-.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6)::before {
+body.clarity-tech .md-text.content > :is(h2, h3, h4, h5, h6)::before,
+body.clarity-tech article.md-text > :is(h2, h3, h4, h5, h6)::before {
   content: "";
   display: inline-block;
   width: 0.38em;
@@ -95,13 +95,13 @@
   vertical-align: 0.04em;
 }
 
-.clarity-story .md-text.content,
-.clarity-story article.md-text {
+body.clarity-story .md-text.content,
+body.clarity-story article.md-text {
   font-family: var(--clarity-font-serif);
 }
 
-.clarity-story .md-text.content > :is(h1, h2, h3, h4, h5, h6),
-.clarity-story article.md-text > :is(h1, h2, h3, h4, h5, h6) {
+body.clarity-story .md-text.content > :is(h1, h2, h3, h4, h5, h6),
+body.clarity-story article.md-text > :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
   font-family: var(--clarity-font-serif);
   font-weight: 700;
@@ -109,8 +109,8 @@
   text-wrap: balance;
 }
 
-.clarity-story .md-text.content > h2::before,
-.clarity-story article.md-text > h2::before {
+body.clarity-story .md-text.content > h2::before,
+body.clarity-story article.md-text > h2::before {
   content: "";
   position: absolute;
   width: 2.4em;
@@ -121,8 +121,8 @@
   z-index: -1;
 }
 
-.clarity-story .md-text.content > p,
-.clarity-story article.md-text > p {
+body.clarity-story .md-text.content > p,
+body.clarity-story article.md-text > p {
   text-indent: 2em;
 }
 
@@ -429,8 +429,8 @@ body.clarity-search-open .search-wrapper {
     border-radius: 0;
   }
 
-  .clarity-story .md-text.content > p,
-  .clarity-story article.md-text > p {
+  body.clarity-story .md-text.content > p,
+  body.clarity-story article.md-text > p {
     text-indent: 1.5em;
   }
 }

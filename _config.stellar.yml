@@ -169,7 +169,7 @@ style:
 comments:
   service: giscus
   comment_title: 快来参与讨论吧~
-  lazyload: true
+  lazyload: false
   giscus:
     src: https://giscus.app/client.js
     data-repo: jyxu0621/blog
@@ -183,5 +183,4 @@ comments:
     data-input-position: top
     data-theme: preferred_color_scheme
     data-lang: zh-CN
-    data-loading: lazy
     crossorigin: anonymous
