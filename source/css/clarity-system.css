@@ -519,15 +519,8 @@ body.clarity-search-open .search-wrapper {
 }
 
 /* Keep the article URL share action at the visual end of the footer card. */
-.article-footer section#share > .body > .social-wrap {
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
-  grid-template-columns: none;
-}
-
-.article-footer section#share > .body > .social-wrap > .share-item {
-  margin-left: auto;
+.article-footer #share .social-wrap {
+  justify-content: end;
 }
 
 @media (max-width: 528px) {
