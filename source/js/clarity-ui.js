@@ -107,14 +107,33 @@
     const rightWidgets = document.querySelector(".l_right .widgets");
     if (!rightWidgets || rightWidgets.querySelector(".clarity-stats-widget")) return;
     const stats = siteData.stats || {};
-    const build = siteData.build || {};
+    const started = stats.started
+      || posts.map((post) => post.date).filter(Boolean).sort()[0]
+      || "";
+    const updated = stats.updated
+      || posts.map((post) => post.updated || post.date).filter(Boolean).sort().at(-1)
+      || "";
+    const build = {
+      platform: "GitHub Pages",
+      imageStorage: "GitHub",
+      license: "MIT",
+      articleLicense: "CC BY-NC-SA 4.0",
+      canonical: "jyxu0621.github.io/blog",
+      hexo: "8.1.2",
+      stellar: "1.33.1",
+      node: "24",
+      packageManager: "npm",
+      ci: "Actions",
+      runner: "Ubuntu",
+      ...(siteData.build || {}),
+    };
     const widget = document.createElement("widget");
     widget.className = "widget-wrapper clarity-stats-widget";
     widget.innerHTML = `
       <div class="widget-header dis-select"><span class="name">博客统计</span></div>
       <div class="clarity-post-stats">
-        <div><span>运营时长</span><strong>${relativeDuration(stats.started)}</strong></div>
-        <div><span>上次更新</span><strong>${relativeDuration(stats.updated, "前")}</strong></div>
+        <div><span>运营时长</span><strong>${relativeDuration(started)}</strong></div>
+        <div><span>上次更新</span><strong>${relativeDuration(updated, "前")}</strong></div>
         <div><span>总字数</span><strong>${formatNumber(stats.words)}</strong></div>
       </div>
       <div class="widget-header clarity-build-title dis-select"><span class="name">技术信息</span></div>

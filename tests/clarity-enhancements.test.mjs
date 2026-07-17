@@ -43,4 +43,6 @@ test("Clarity assets expose all four implementation phases", () => {
   for (const label of ["运营时长", "上次更新", "技术信息", "规范域名", "Stellar"]) {
     assert.ok(js.includes(label), `missing sidebar label ${label}`);
   }
+  assert.ok(js.includes('canonical: "jyxu0621.github.io/blog"'), "missing cached-data fallback");
+  assert.ok(js.includes("posts.map((post) => post.date)"), "missing date fallback");
 });
