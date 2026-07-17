@@ -136,7 +136,7 @@ for (const disabled of ["swiper", "scrollreveal", "tianli_gpt", "katex", "mathja
 
 for (const expected of [
   "service: giscus",
-  "lazyload: true",
+  "lazyload: false",
   "src: https://giscus.app/client.js",
   "data-repo: jyxu0621/blog",
   "data-repo-id: R_kgDOTWpQAA",
@@ -149,11 +149,11 @@ for (const expected of [
   "data-input-position: top",
   "data-theme: preferred_color_scheme",
   "data-lang: zh-CN",
-  "data-loading: lazy",
   "crossorigin: anonymous",
 ]) {
   assert.ok(stellar.includes(expected), `Missing Giscus setting: ${expected}`);
 }
+assert.ok(!stellar.includes("data-loading:"), "Giscus iframe must not use a second lazy-load layer");
 
 for (const expected of [
   "columns: 4",
@@ -286,11 +286,15 @@ if (process.argv.includes("--generated")) {
     'data-input-position="top"',
     'data-theme="preferred_color_scheme"',
     'data-lang="zh-CN"',
-    'data-loading="lazy"',
     'crossorigin="anonymous"',
   ]) {
     assert.ok(generatedPost.includes(expected), `Generated Giscus widget is missing: ${expected}`);
   }
+  assert.ok(!generatedPost.includes('data-loading='), "Generated Giscus widget must load eagerly");
+  assert.ok(
+    generatedPost.includes("util.viewportLazyload(el, load_discus, false)"),
+    "Generated Giscus loader must initialize without viewport deferral",
+  );
   assert.ok(!generated.includes('id="giscus"'), "Homepage must not contain a Giscus widget");
   assert.ok(
     generated.includes("Jason Xu&#39;s Blog") || generated.includes("Jason Xu's Blog"),
