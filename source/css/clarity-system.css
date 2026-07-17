@@ -518,11 +518,6 @@ body.clarity-search-open .search-wrapper {
   box-shadow: var(--clarity-shadow-2);
 }
 
-/* Keep the article URL share action at the visual end of the footer card. */
-.article-footer #share .social-wrap {
-  justify-content: end;
-}
-
 @media (max-width: 528px) {
   .clarity-toolbar {
     align-items: stretch;
