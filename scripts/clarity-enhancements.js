@@ -53,8 +53,6 @@ function serializePosts() {
     updated: dateValue(post.updated),
     words: post.clarity_words || countWords(post.content),
     type: articleType(post),
-    featured: Boolean(post.recommend || post.sticky),
-    recommend: Number(post.recommend || post.sticky || 0),
   }));
 }
 

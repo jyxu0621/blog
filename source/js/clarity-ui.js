@@ -59,28 +59,6 @@
     return cards;
   }
 
-  function createFeatured() {
-    const list = document.querySelector(".post-list.post");
-    if (!list || document.querySelector(".clarity-featured")) return;
-    let featured = posts.filter((post) => post.cover && post.featured)
-      .sort((a, b) => b.recommend - a.recommend);
-    if (!featured.length) featured = posts.filter((post) => post.cover).slice(0, 6);
-    if (!featured.length) return;
-    const section = document.createElement("section");
-    section.className = "clarity-featured";
-    section.setAttribute("aria-label", "精选文章");
-    section.innerHTML = `
-      <div class="clarity-section-heading"><strong>精选文章</strong><span>横向滚动浏览</span></div>
-      <div class="clarity-featured-track">
-        ${featured.map((post) => `
-          <a class="clarity-featured-item" href="${escapeHTML(post.path)}">
-            <img src="${escapeHTML(post.cover)}" alt="" loading="lazy">
-            <span>${escapeHTML(post.title)}</span>
-          </a>`).join("")}
-      </div>`;
-    list.before(section);
-  }
-
   function createToolbar(cards) {
     const list = document.querySelector(".post-list.post");
     if (!list || !cards.length || list.querySelector(".clarity-toolbar")) return;
@@ -227,7 +205,6 @@
   }
 
   const cards = enhanceCards();
-  createFeatured();
   createToolbar(cards);
   createStatsWidget();
   enhanceCurrentPost();

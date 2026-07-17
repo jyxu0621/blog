@@ -32,11 +32,11 @@ test("Clarity assets expose all four implementation phases", () => {
   const css = readFileSync(new URL("../source/css/clarity-system.css", import.meta.url), "utf8");
   const js = readFileSync(new URL("../source/js/clarity-ui.js", import.meta.url), "utf8");
   for (const marker of [
-    ".clarity-tech", ".clarity-story", ".clarity-tags", ".clarity-featured",
+    ".clarity-tech", ".clarity-story", ".clarity-tags",
     ".clarity-toolbar", ".clarity-code-wrap", ".clarity-archive-tools",
   ]) assert.ok(css.includes(marker), `missing CSS marker ${marker}`);
   for (const functionName of [
-    "enhanceCards", "createFeatured", "createToolbar", "createStatsWidget",
+    "enhanceCards", "createToolbar", "createStatsWidget",
     "enhanceCodeBlocks", "enhanceArchive", "enhanceFooter",
   ]) assert.ok(js.includes(`function ${functionName}`), `missing function ${functionName}`);
 });
