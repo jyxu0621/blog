@@ -1,6 +1,7 @@
 "use strict";
 
 const { stripHTML } = require("hexo-util");
+const packageInfo = require("../package.json");
 
 function countWords(input) {
   const text = stripHTML(String(input || ""))
@@ -76,6 +77,21 @@ hexo.extend.filter.register("after_render:html", function injectClarityData(html
       posts: posts.length,
       words: posts.reduce((sum, post) => sum + post.words, 0),
       categories: new Set(posts.map((post) => post.category)).size,
+      started: posts.map((post) => post.date).filter(Boolean).sort()[0] || "",
+      updated: posts.map((post) => post.updated || post.date).filter(Boolean).sort().at(-1) || "",
+    },
+    build: {
+      platform: "GitHub Pages",
+      imageStorage: "GitHub",
+      license: packageInfo.license || "MIT",
+      articleLicense: "CC BY-NC-SA 4.0",
+      canonical: String(hexo.config.url || "").replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      hexo: packageInfo.dependencies.hexo.replace(/^[~^]/, ""),
+      stellar: packageInfo.dependencies["hexo-theme-stellar"].replace(/^[~^]/, ""),
+      node: "24",
+      packageManager: "npm",
+      ci: "Actions",
+      runner: "Ubuntu",
     },
   }).replace(/</g, "\\u003c");
   return html.replace(

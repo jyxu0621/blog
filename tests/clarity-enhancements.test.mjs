@@ -34,9 +34,13 @@ test("Clarity assets expose all four implementation phases", () => {
   for (const marker of [
     ".clarity-tech", ".clarity-story", ".clarity-tags",
     ".clarity-toolbar", ".clarity-code-wrap", ".clarity-archive-tools",
+    ".clarity-build-card", ".clarity-build-grid",
   ]) assert.ok(css.includes(marker), `missing CSS marker ${marker}`);
   for (const functionName of [
     "enhanceCards", "createToolbar", "createStatsWidget",
     "enhanceCodeBlocks", "enhanceArchive", "enhanceFooter",
   ]) assert.ok(js.includes(`function ${functionName}`), `missing function ${functionName}`);
+  for (const label of ["运营时长", "上次更新", "技术信息", "规范域名", "Stellar"]) {
+    assert.ok(js.includes(label), `missing sidebar label ${label}`);
+  }
 });

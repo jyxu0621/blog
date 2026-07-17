@@ -23,6 +23,18 @@
   };
   const postByPath = new Map(posts.map((post) => [normalizePath(post.path), post]));
   const formatNumber = (value) => new Intl.NumberFormat("zh-CN", { notation: value > 9999 ? "compact" : "standard" }).format(value || 0);
+  const relativeDuration = (value, suffix = "") => {
+    const time = new Date(value).valueOf();
+    if (!time) return "暂无";
+    const days = Math.max(0, Math.floor((Date.now() - time) / 86400000));
+    if (days < 1) return suffix ? "今天" : "不足 1 天";
+    if (days < 30) return `${days} 天${suffix}`;
+    const months = Math.floor(days / 30.4375);
+    if (months < 12) return `${months} 个月${suffix}`;
+    const years = Math.floor(months / 12);
+    const rest = months % 12;
+    return `${years} 年${rest ? ` ${rest} 个月` : ""}${suffix}`;
+  };
   const escapeHTML = (value) => String(value || "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
   })[char]);
@@ -95,14 +107,36 @@
     const rightWidgets = document.querySelector(".l_right .widgets");
     if (!rightWidgets || rightWidgets.querySelector(".clarity-stats-widget")) return;
     const stats = siteData.stats || {};
+    const build = siteData.build || {};
     const widget = document.createElement("widget");
     widget.className = "widget-wrapper clarity-stats-widget";
     widget.innerHTML = `
       <div class="widget-header dis-select"><span class="name">博客统计</span></div>
       <div class="clarity-post-stats">
-        <div><strong>${formatNumber(stats.posts)}</strong><span>文章</span></div>
-        <div><strong>${formatNumber(stats.words)}</strong><span>字数</span></div>
-        <div><strong>${formatNumber(stats.categories)}</strong><span>分类</span></div>
+        <div><span>运营时长</span><strong>${relativeDuration(stats.started)}</strong></div>
+        <div><span>上次更新</span><strong>${relativeDuration(stats.updated, "前")}</strong></div>
+        <div><span>总字数</span><strong>${formatNumber(stats.words)}</strong></div>
+      </div>
+      <div class="widget-header clarity-build-title dis-select"><span class="name">技术信息</span></div>
+      <div class="clarity-build-card">
+        <dl class="clarity-build-list">
+          <div><dt>构建平台</dt><dd>${escapeHTML(build.platform)}</dd></div>
+          <div><dt>图片存储</dt><dd>${escapeHTML(build.imageStorage)}</dd></div>
+          <div><dt>软件协议</dt><dd>${escapeHTML(build.license)}</dd></div>
+          <div><dt>文章许可</dt><dd>${escapeHTML(build.articleLicense)}</dd></div>
+          <div><dt>规范域名</dt><dd>${escapeHTML(build.canonical)}</dd></div>
+        </dl>
+        <details class="clarity-build-details" open>
+          <summary><span class="clarity-build-collapse">收起构建信息</span><span class="clarity-build-expand">展开构建信息</span></summary>
+          <div class="clarity-build-grid">
+            <div><span>Blog</span><strong>Hexo ${escapeHTML(build.hexo)}</strong></div>
+            <div><span>Theme</span><strong>Stellar ${escapeHTML(build.stellar)}</strong></div>
+            <div><span>Node</span><strong>v${escapeHTML(build.node)}</strong></div>
+            <div><span>Package</span><strong>${escapeHTML(build.packageManager)}</strong></div>
+            <div><span>CI</span><strong>${escapeHTML(build.ci)}</strong></div>
+            <div><span>Runner</span><strong>${escapeHTML(build.runner)}</strong></div>
+          </div>
+        </details>
       </div>`;
     rightWidgets.prepend(widget);
   }
