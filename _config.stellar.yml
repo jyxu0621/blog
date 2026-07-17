@@ -6,7 +6,7 @@ inject:
     - "<link rel=\"stylesheet\" href=\"https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css\" media=\"print\" onload=\"this.media='all'\">"
     - '<noscript><link rel="stylesheet" href="https://npm.elemecdn.com/lxgw-wenkai-screen-webfont/style.css"></noscript>'
     - '<link rel="stylesheet" href="/blog/css/article-card-cover.css">'
-    - '<link rel="stylesheet" href="/blog/css/clarity-system.css?v=20260717-3">'
+    - '<link rel="stylesheet" href="/blog/css/clarity-system.css?v=20260717-4">'
     - '<script defer src="/blog/js/clarity-ui.js?v=20260717-3"></script>'
 
 canonical:
